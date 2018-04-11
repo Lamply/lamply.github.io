@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Slide Water</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2018-04-11T09:58:48.906Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>Lamply</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>O_o</title>
+    <link href="http://yoursite.com/2018/04/11/water/"/>
+    <id>http://yoursite.com/2018/04/11/water/</id>
+    <published>2018-04-11T09:58:48.906Z</published>
+    <updated>2018-04-11T09:58:48.906Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里是划水专区, 在这里你可以自由发呆.  </p><div align="center"><br><img src="/2018/04/11/water/portrait.png" alt="dai"><br></div><br><div align="left"><br>如要赶上线请点击屏幕右/左上角红色标记 <img src="/2018/04/11/water/close.png" alt="close"><br></div><br><div align="center"><br><img src="/2018/04/11/water/8_clock.jpg" alt="up"><br></div>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;这里是划水专区, 在这里你可以自由发呆.  &lt;/p&gt;
+&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;/2018/04/11/water/portrait.png&quot; alt=&quot;dai&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;&lt;b
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
