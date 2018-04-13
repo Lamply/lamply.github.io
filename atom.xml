@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Slide Water</title>
+  <title>SlideWater</title>
   
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="https://lamply.github.io/"/>
   <updated>2018-04-12T06:27:48.507Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://lamply.github.io/</id>
   
   <author>
     <name>Lamply</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>O_o</title>
-    <link href="http://yoursite.com/2018/04/11/water/"/>
-    <id>http://yoursite.com/2018/04/11/water/</id>
+    <link href="https://lamply.github.io/2018/04/11/water/"/>
+    <id>https://lamply.github.io/2018/04/11/water/</id>
     <published>2018-04-11T11:56:00.000Z</published>
     <updated>2018-04-12T06:27:48.507Z</updated>
     
