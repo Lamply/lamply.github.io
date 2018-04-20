@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>SlideWater</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://lamply.github.io/"/>
+  <updated>2018-04-12T06:27:48.507Z</updated>
+  <id>https://lamply.github.io/</id>
+  
+  <author>
+    <name>Lamply</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>O_o</title>
+    <link href="https://lamply.github.io/2018/04/11/water/"/>
+    <id>https://lamply.github.io/2018/04/11/water/</id>
+    <published>2018-04-11T11:56:00.000Z</published>
+    <updated>2018-04-12T06:27:48.507Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里是划水专区, 在这里你可以自由发呆.  </p><div align="center"><br><img src="/2018/04/11/water/portrait.png" alt="dai"><br></div><br><div align="left"><br>如要赶上线请点击屏幕右/左上角红色标记 <img src="/2018/04/11/water/close.png" alt="close"><br></div><br><div align="center"><br><img src="/2018/04/11/water/8_clock.jpg" alt="up"><br></div><a id="more"></a><p>测试完毕.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这里是划水专区, 在这里你可以自由发呆.  &lt;/p&gt;
+&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;/2018/04/11/water/portrait.png&quot; alt=&quot;dai&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;如要赶上线请点击屏幕右/左上角红色标记 &lt;img src=&quot;/2018/04/11/water/close.png&quot; alt=&quot;close&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;/2018/04/11/water/8_clock.jpg&quot; alt=&quot;up&quot;&gt;&lt;br&gt;&lt;/div&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
