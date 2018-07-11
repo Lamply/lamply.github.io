@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>SlideWater</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://lamply.github.io/"/>
+  <updated>2018-07-11T06:05:18.663Z</updated>
+  <id>https://lamply.github.io/</id>
+  
+  <author>
+    <name>Lamply</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其三</title>
+    <link href="https://lamply.github.io/2018/06/28/%E5%9B%BE%E5%BD%A2%E4%B8%8E%E8%A1%AC%E5%BA%95/"/>
+    <id>https://lamply.github.io/2018/06/28/图形与衬底/</id>
+    <published>2018-06-27T16:00:00.000Z</published>
+    <updated>2018-07-11T06:05:18.663Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是 GEB 的第三章部分阅读笔记，内容多是我自己筛选、压缩、重排的，并尽可能的保留书中名词的译名和说法。因为我只有非数学系普通理工科大学生的数学基础，不怎么熟悉数论逻辑学什么的，所以可能会有某些错误的理解或说法，就酱。<br><a id="more"></a></p><h3 id="素数系统"><a href="#素数系统" class="headerlink" title="素数系统"></a>素数系统</h3><p>这部分先是引入描述素数的形式系统，然后试图通过构建其他更简单的类似形式系统来达到目的。<br>比如书中使用了一个看上去很聪明的方法：  </p><ol><li>构建tq系统（类似pq系统的乘法版本）</li><li>制定Cx定理（如果 xqy-tz- 是定理，则Cx是定理）来刻划合数（因为y- z- 为数量大于一的短杠）</li><li>草拟一个规则（如果Cx不是一个定理，则Px是个定理）来刻划素数  </li></ol><p>这样看上去似乎就完成了，然而这里面有一个重大缺陷：Cx是否是一个定理不是能够明显表达的印符操作，就像 WJU 系统中 WU 是不是定理没办法一下子看出来一样，我们必须要到形式系统之外才能推出什么什么不可能出现在定理中， 这是不符合被允许的印符操作的。</p><p>这里有个很关键的事情，就是当我们以 惟方式（W） 来工作时，我们很经常会混淆符号串与符号串的解释，把 — 与 3 做同等对待，从而得出一些错误的结论。之前对形式化的要求就显得额外重要，我们不能把算术事实与印符定理相混淆。  </p><p>从这里书中开始谈论非定理的形式问题，我们可以知道定理都是具有共同“形式”的，即Cx，当x为合数数量的短杠时Cx为定理，那对应的非定理是否也是有同一种“形式”呢？答案是对，也不对（这里书中排除了非定理中非良构的符号串，比如 tt-Cqq 这种乱七八糟的东西），无可否认它们都具有某种印符特性，但这是否能称为“形式”确是不清楚的，因为它们是以否定的方式定义的。  </p><p><strong><strong>（题外话：可能会有人跳出来说，Cx规则与合数同构，因为合数反过来就是素数，所以Cx的良构非定理就和素数同构啦。虽然书中并没有对这个做论证，但我想大概就像之前说得那样，这种惟方式是不能用于替换推导的，后面可能就会有完全符合形式系统的方式来得出这种结论。）</strong></strong><br><br></p><h3 id="图形与衬底"><a href="#图形与衬底" class="headerlink" title="图形与衬底"></a>图形与衬底</h3><p><em>到这里书中跳到了另一个层次，讲述刚才的否定在其他层面的形象体现，并通过类比（Analogy，传说中 GEB 的核心）把这种否定观念代回到形式系统中。到这里就能明白之前阿基里斯和乌龟电话里的意思了，虽然我早就看出谜底是蜡烛，不过现在看来乌龟的图形与衬底的提示其实就是映射了“虫虫”谜题和“昔火”谜题，说明这章的主旨正是这种正反相衬。</em><br><br><br>这部分主要介绍了图形和衬底，一般来说，我们看到一幅画，会关注它的图形，也可以叫前景、正空间，不可避免的会产生衬底，也叫背景、负空间。那么除了一般的只有图形有意义，衬底只是附带的，那这幅画书中称作流畅可画出；如果图形和衬底都有意义，就叫倍流畅，就是双倍流畅的意思。埃舍尔就很擅长倍流畅的画，整幅画没有附带的部分，各个区域都是有意义的画像。  </p><p>然后在音乐中也存在这种现象，对应的是旋律与伴奏，还有音符落在强半拍和弱半拍的交织。  </p><p>回到形式系统，我们的目标是把作为负空间表示的素数个短杠符号串Cx改成用正空间表示的Px。从图形与衬底包含相同的信息来看，似乎这是一般意义上可行的，但是事实上只是在这个问题上才可行，有这样一个事实：  </p><p>  存在一个形式系统，其负空间（非定理集）不是任何一个形式系统的正空间（定理集）。  </p><p>换个更专业的描述即是，存在非递归的递归可枚举集。这里“递归可枚举”（缩写r.e.）对应艺术上的流畅可画出，简而言之就是可以按照印符规则生成的集合（所有形式的系统定理集）；“递归”则是对应倍流畅，意思是不仅它本身是r.e.，其补集也是r.e.。  </p><p>这就导致了存在一些形式系统，它们没有用印符规则表述的判断过程。  </p><p>关于这个论点的证明，作者没有详细给出，只是把上面的事实“当作信念而接受”。后面以所有图形都是倍流畅的吗来类比所有的集合都是递归的吗，然后完结这一个议题。  </p><p>最后部分给出了生成素数的形式系统，使用不整除和没有因子的规则来形成单向测试，这里不详细记录了。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是 GEB 的第三章部分阅读笔记，内容多是我自己筛选、压缩、重排的，并尽可能的保留书中名词的译名和说法。因为我只有非数学系普通理工科大学生的数学基础，不怎么熟悉数论逻辑学什么的，所以可能会有某些错误的理解或说法，就酱。&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其二</title>
+    <link href="https://lamply.github.io/2018/06/27/%E5%85%B3%E4%BA%8E%E5%BD%A2%E5%BC%8F%E7%B3%BB%E7%BB%9F/"/>
+    <id>https://lamply.github.io/2018/06/27/关于形式系统/</id>
+    <published>2018-06-26T16:00:00.000Z</published>
+    <updated>2018-07-11T05:58:28.587Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是「GEB」第二、三章的读书笔记，这部分是边读边记，同时忽略了一些详细严谨的解释和讨论。<br><a id="more"></a></p><h4 id="pq系统"><a href="#pq系统" class="headerlink" title="pq系统"></a>pq系统</h4><p>首先引入一个简单构造的系统，一个由「p、q、-」三个符合组成的系统，它具有无数条公理，通过公理模式「x为一组短杠”-“，那么”x-qxp-“为一条公理」来产生。其生成规则只有一条「x、y、z为只包含短杠的符号串，若xqypz为定理，则x-qypz-为定理」。  </p><p>因为只包含了加长的规则，所以可以说这个系统存在判定过程。可以找出其判定过程就是：对于任意一个xqypz符号串，x、y、z为仅由短杠组成的符号串，若其数量x=y+z，则xqypz是一个定理。这属于一种自顶向下的判定过程。  </p><p>到这里就涉及到了一个书中的中心问题。可以看到pq的定理和加法的相似，比如 —–q–p— 是一条定理，因为5=2+3。但仔细一想，「—–q–p—是一条定理」是否就和「5=2+3」是一样的呢，我们之所以会这么想，是因为我们在pq定理和加法运算之间看到了「同构」，即两个复杂结构可以互相映射，两者各部分都有两两对应，比如 —– 对应 5，q 对应 =，– 对应 2，p 对应 +，— 对应 3。这种对应关系有一个名称：解释。</p><p>其次，这种对应也存在于经过解释的定理和真陈述（真理）之间，比如刚才的pq定理，尽管它可以用其他猪牛马做解释，但唯有用加法来解释时同构存在于定理和现实的某部分中，所以这种解释是有意义的。  </p><p>值得注意的是，pq定理的加法解释是只有在其符合pq形式系统的形式（即xqypz形式）时才能够与真理同构的，这种形式上的符合称为「良构」。若符号串不是良构的，那就不能为此符号串赋予同等意义的解释，比如 ——–q–p–p–p–，尽管 8=2+2+2+2，但该符号串并不是良构的，所以这不是一条定理，更不能赋予其意义。在这个基础上可以看到，形式系统的意义一定是被动的。  </p><p>后面的部分大致是关于将形式系统推广的时候遇到的障碍。要构造一个和真理完全同构的形式系统时，必须要让每一个定理为真理，每一个非定理为“假理”。但当定理集合无穷的情况下，我们怎么知道所有的定理都在这种解释方法下表达了真理？这里书中介绍了抽象理想的数，并引入了“欧几里得定理”的证明过程，这种证明的陈述具有紧密的上下联系，使得大家最终都必须相信看上去并不显然的结论。这个证明过程使用了新的特定的词汇，用于抽象描述数的性质，避开了无穷。  </p><p><br><br>到这里第二章结束。这一部分算是初步介绍了形式系统，从前面的pq系统开始介绍，后面似乎开始泛化，有点难抓住主题，每一小段都是单独一方面的具体描述，我有点云里雾里，只是隐约感受到开始将形式系统完备到能应用的有意义的状态，那些描述趋向于说明一些困难，以及某一些解决的手段。我觉得这里的困难大概就是前面乌龟和阿基里斯的对话那里隐喻的问题，非常地逻辑学和数学……  </p><p>后面几章会构造一个形式系统，并似乎要讨论关于该系统能否理论上达到我们的思维能力的水平。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是「GEB」第二、三章的读书笔记，这部分是边读边记，同时忽略了一些详细严谨的解释和讨论。&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其一</title>
+    <link href="https://lamply.github.io/2018/06/21/WU%E8%B0%9C%E9%A2%98/"/>
+    <id>https://lamply.github.io/2018/06/21/WU谜题/</id>
+    <published>2018-06-20T16:00:00.000Z</published>
+    <updated>2018-07-11T06:00:34.799Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习之余看起了以前没看完的书，顺便把博客环境重新搭了起来。<br><a id="more"></a></p><h3 id="WJU-谜题"><a href="#WJU-谜题" class="headerlink" title="WJU 谜题"></a>WJU 谜题</h3><p>这是在「GEB」里出现的一个谜题，原版书中是MU谜题，不过意思一样，讲的是通过在一个只包含WJU三个字符串的形式系统内给出WJ字符串要通过四条规则来产生WU字符串的谜题，这四条规则是：  </p><ol><li>如果字符串以J结尾则可以在其后加上一个U，即WUJ -&gt; WUJU</li><li>字符串  Wx 可以扩展为 Wxx，其中「x」为W后面的所有字符串，比如 WJ -&gt; WJJ, WUJ -&gt; WUJUJ</li><li>连续的三个J可以替换成一个U，即 JJJ -&gt; U，但一个U不能替换成三个J</li><li>连续的两个U可以剔除  </li></ol><p>整个系统产生的字符串都是顺序相关的，WJU与WUJ是不同的字符串。那么给定WJ字符串能否转换成WU呢？  </p><p>说实话，这章看得我一愣一愣的，因为这个谜题实际上是不可解的，J只能通过倍增以及三倍加减来变换，即含有质数2，这样得出的J的数量是不可能为3所整除的（假设U与3倍J等价），而书中以此谜题为例子后面却没有对这个谜题做出解答，转而阐述人类智能在处理形式系统时和机器的差异以及其他东西。我觉得如果能稍微提示下花个十来分钟做尝试，然后最后给出答案，再进行深入的探讨会合适很多。而且后面关于判定过程的部分翻译也有些错误和含糊，看得一愣一愣的就突然结束了话题。  </p><p>只能说这本书的写作风格不太符合一般的读书方式，好在大部分的意味都能理解到。</p><h5 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h5><p>提出该WJU系统的意义在于阐述对于一个形式系统的三种处理方式：书中称之为惟方式（W），机方式（J），无方式（U）。也就是分别对应从规则入手，在形式系统外审视其规则做出总结归纳，以及完全按照形式系统的规则像机器一样做运算。</p><p>[参考资料]<br>wiki： <a href="https://en.m.wikipedia.org/wiki/MU_puzzle" target="_blank" rel="noopener">https://en.m.wikipedia.org/wiki/MU_puzzle</a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习之余看起了以前没看完的书，顺便把博客环境重新搭了起来。&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>零核现象</title>
+    <link href="https://lamply.github.io/2018/04/19/zero-kernels/"/>
+    <id>https://lamply.github.io/2018/04/19/zero-kernels/</id>
+    <published>2018-04-19T11:17:12.000Z</published>
+    <updated>2018-07-11T05:54:49.934Z</updated>
+    
+    <content type="html"><![CDATA[<p><div align="center"><br><img src="/2018/04/19/zero-kernels/TingMengDe.bmp" alt="zero"><br></div><br>这里是对零核现象的观察实验记录.<br>具体来说, 就是在训练卷积神经网络的过程中发现模型中有大量卷积核的 L1 变为 0 的情况, 这里为了方便简称零核现象.<br><a id="more"></a><br>最初遇到这种问题是在 <a href="https://github.com/MarekKowalski/DeepAlignmentNetwork" target="_blank" rel="noopener">DAN</a> 训练时发现的, 当时觉得是太大学习率, ReLU 死亡, 后面降低了 lr 就没出现过了.<br>直到后来做分割观察 <a href="https://github.com/TimoSaemann/ENet" target="_blank" rel="noopener">ENet</a> 的预训练模型时又发现了几百个零核的现象, 而且自己用 ShuffleNet 做的分割网络也出现了非常多零核, 这对模型性能显然是有很大影响的, 所以就下定决心解决这个问题.<br>根据之前 DAN 的经验, 我自然先试了一下降低学习率, 结果没用, 虽然零增长的速度变慢了, 但还是会出现, 而且随着训练过程零核几乎线性增加 ( 像上图那样 ).<br>把每层的零核数作纵坐标, 层数作横坐标, 打印成曲线出来就是这个样子:  </p><p><div align="center"><br><img src="/2018/04/19/zero-kernels/coco_train.png" alt="zero_shuffle"><br>一共 2312 个零核, 简直壮观.<br></div><br><br></p><p>因为零核多集中在 depthwise 卷积上, 所以感觉上可能是由于 depthwise 卷积核太薄, 容易训练时掉坑回不来. 后面在网上也没找到多少关于这个的讨论, 唯一一个是在知乎上 <a href="https://www.zhihu.com/question/265709710/answer/298245276" target="_blank" rel="noopener">关于 MobileNet V2 的回答</a>, 也是差不多的解释, 不过我后来去掉了后面所有的 ReLU, 也是得到了很多空核, 也是个迷.<br>无奈之下开始各种调超参. 一是把 batch size 加大, 讲道理更新得会稳一些, 然而并没有用, 零核依然会出现. 二是换了优化器, 用回朴素的 SGD momentum. 这时神奇的事情发生了, 不管怎么训练, 怎么调大 lr, 调小 batch size, 零核都没有出现了…</p><p><div align="center"><br><img src="/2018/04/19/zero-kernels/adam.png" alt="adam"><br>Adam<br><img src="/2018/04/19/zero-kernels/sgd.png" alt="sgd"><br>SGD<br></div><br>最终对比了几个数据集, 从结果上来看 SGD 版比 Adam 版泛化性更强, 性能在个别数据集上也提升很大, 测试指标的标准差更是明显低于 Adam 版的, 做分割出来的边界也变得更加平滑了. 毕竟 Adam 版零核集聚在高层次上, 泛化方面有所缺陷的也是正常的.  </p><h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>后面有空在 mnist 上做了些实验, 发现优化器中只有 Adam 和 RMSProp 肯定会产生零核, 而用其他 SGD, AdaDelta, AdaGrad 都不会产生零核. 既然如此的话, 似乎是可以从 RMSProp 中找到启示的, 但如果要验证还是得具体分析下更新过程才行, 只能暂时留坑了. </p><h3 id="接续"><a href="#接续" class="headerlink" title="接续"></a>接续</h3><p>好吧, 上一次记录的结果是错误的, 并非只有 Adam 和 RMSProp 肯定会产生零核, 理论上零核的产生依旧是和参数更新的速率密不可分, 所以所有优化方法都可能产生零核. 之所以之前产生错误的结论, 是因为统计零核时采用了 L1 + 阈值 的方法, 而实际上零核表现出来的是并未完全收敛于 0, L1 差均值 10 倍以内, 但相较于其他滤波器而言判别力非常低的情况. 比如下面这种.<br>下面是用 AdaGrad 优化一个普通卷积接 depthwise 卷积重复三次的简单网络, 数据集用的 fashion-mnist, 图为其中两层相邻卷积的可视化, 红橙黄绿蓝靛紫, 代表卷积核的绝对值大小, 左边为普通卷积沿通道绝对值叠加得来, 右边为 depthwise 卷积取绝对值得来.  </p><p><div align="center"><br><img src="/2018/04/19/zero-kernels/bad.png" alt="sgd"><br></div><br>其后两层</p><p><div align="center"><br><img src="/2018/04/19/zero-kernels/bad2.png" alt="sgd"><br></div><br>可以看到, 部分卷积核已经几乎一片红了, 对其上层卷积核也产生了影响. 相比之下, SGD 训练的好的情况:</p><p><div align="center"><br><img src="/2018/04/19/zero-kernels/good.png" alt="sgd"><br></div><br>虽然还无法解明什么, 但至少说明了 depthwise 卷积不太好训练, 通过观察训练过程卷积核的变化, 可以看到 SGD + momentum 相对还是比较平稳的, 尽管有些时候可能也会漏网 ( 实际上之前用 MobileNetV2 做分割在 COCO 上预训练也有出现十几个零核… ). 先到这里, 之后一年的时间因为要专心学习, 所以大概要全面搁置了, 可能会整理记录下之前的项目. 就等之后爬上好的平台再说吧.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;/2018/04/19/zero-kernels/TingMengDe.bmp&quot; alt=&quot;zero&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;这里是对零核现象的观察实验记录.&lt;br&gt;具体来说, 就是在训练卷积神经网络的过程中发现模型中有大量卷积核的 L1 变为 0 的情况, 这里为了方便简称零核现象.&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="观测" scheme="https://lamply.github.io/tags/%E8%A7%82%E6%B5%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>O_o</title>
+    <link href="https://lamply.github.io/2018/04/11/water/"/>
+    <id>https://lamply.github.io/2018/04/11/water/</id>
+    <published>2018-04-11T11:56:00.000Z</published>
+    <updated>2018-07-10T14:08:05.923Z</updated>
+    
+    <content type="html"><![CDATA[<p>这里是划水专区, 在这里你可以自由发呆.  </p><div align="center"><br><img src="/2018/04/11/water/portrait.png" alt="dai"><br></div><br><div align="left"><br><a id="more"></a><br>如要赶上线请点击屏幕右/左上角红色标记 <img src="/2018/04/11/water/close.png" alt="close"><br></div><br><div align="center"><br><img src="/2018/04/11/water/8_clock.jpg" alt="up"><br></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这里是划水专区, 在这里你可以自由发呆.  &lt;/p&gt;
+&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;img src=&quot;/2018/04/11/water/portrait.png&quot; alt=&quot;dai&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div align=&quot;left&quot;&gt;&lt;br&gt;&lt;/div&gt;
+    
+    </summary>
+    
+    
+      <category term="闲聊" scheme="https://lamply.github.io/tags/%E9%97%B2%E8%81%8A/"/>
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,28 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 《哥德尔·艾舍尔·巴赫——集异璧之大成》其三 · SlideWater</title><meta name="description" content="《哥德尔·艾舍尔·巴赫——集异璧之大成》其三 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">《哥德尔·艾舍尔·巴赫——集异璧之大成》其三</h1><div class="post-info">Jun 28, 2018</div><div class="post-content"><p>本文是 GEB 的第三章部分阅读笔记，内容多是我自己筛选、压缩、重排的，并尽可能的保留书中名词的译名和说法。因为我只有非数学系普通理工科大学生的数学基础，不怎么熟悉数论逻辑学什么的，所以可能会有某些错误的理解或说法，就酱。<br><a id="more"></a></p>
+<h3 id="素数系统"><a href="#素数系统" class="headerlink" title="素数系统"></a>素数系统</h3><p>这部分先是引入描述素数的形式系统，然后试图通过构建其他更简单的类似形式系统来达到目的。<br>比如书中使用了一个看上去很聪明的方法：  </p>
+<ol>
+<li>构建tq系统（类似pq系统的乘法版本）</li>
+<li>制定Cx定理（如果 xqy-tz- 是定理，则Cx是定理）来刻划合数（因为y- z- 为数量大于一的短杠）</li>
+<li>草拟一个规则（如果Cx不是一个定理，则Px是个定理）来刻划素数  </li>
+</ol>
+<p>这样看上去似乎就完成了，然而这里面有一个重大缺陷：Cx是否是一个定理不是能够明显表达的印符操作，就像 WJU 系统中 WU 是不是定理没办法一下子看出来一样，我们必须要到形式系统之外才能推出什么什么不可能出现在定理中， 这是不符合被允许的印符操作的。</p>
+<p>这里有个很关键的事情，就是当我们以 惟方式（W） 来工作时，我们很经常会混淆符号串与符号串的解释，把 — 与 3 做同等对待，从而得出一些错误的结论。之前对形式化的要求就显得额外重要，我们不能把算术事实与印符定理相混淆。  </p>
+<p>从这里书中开始谈论非定理的形式问题，我们可以知道定理都是具有共同“形式”的，即Cx，当x为合数数量的短杠时Cx为定理，那对应的非定理是否也是有同一种“形式”呢？答案是对，也不对（这里书中排除了非定理中非良构的符号串，比如 tt-Cqq 这种乱七八糟的东西），无可否认它们都具有某种印符特性，但这是否能称为“形式”确是不清楚的，因为它们是以否定的方式定义的。  </p>
+<p><strong><strong>（题外话：可能会有人跳出来说，Cx规则与合数同构，因为合数反过来就是素数，所以Cx的良构非定理就和素数同构啦。虽然书中并没有对这个做论证，但我想大概就像之前说得那样，这种惟方式是不能用于替换推导的，后面可能就会有完全符合形式系统的方式来得出这种结论。）</strong></strong><br><br></p>
+<h3 id="图形与衬底"><a href="#图形与衬底" class="headerlink" title="图形与衬底"></a>图形与衬底</h3><p><em>到这里书中跳到了另一个层次，讲述刚才的否定在其他层面的形象体现，并通过类比（Analogy，传说中 GEB 的核心）把这种否定观念代回到形式系统中。到这里就能明白之前阿基里斯和乌龟电话里的意思了，虽然我早就看出谜底是蜡烛，不过现在看来乌龟的图形与衬底的提示其实就是映射了“虫虫”谜题和“昔火”谜题，说明这章的主旨正是这种正反相衬。</em><br><br><br>这部分主要介绍了图形和衬底，一般来说，我们看到一幅画，会关注它的图形，也可以叫前景、正空间，不可避免的会产生衬底，也叫背景、负空间。那么除了一般的只有图形有意义，衬底只是附带的，那这幅画书中称作流畅可画出；如果图形和衬底都有意义，就叫倍流畅，就是双倍流畅的意思。埃舍尔就很擅长倍流畅的画，整幅画没有附带的部分，各个区域都是有意义的画像。  </p>
+<p>然后在音乐中也存在这种现象，对应的是旋律与伴奏，还有音符落在强半拍和弱半拍的交织。  </p>
+<p>回到形式系统，我们的目标是把作为负空间表示的素数个短杠符号串Cx改成用正空间表示的Px。从图形与衬底包含相同的信息来看，似乎这是一般意义上可行的，但是事实上只是在这个问题上才可行，有这样一个事实：  </p>
+<p>  存在一个形式系统，其负空间（非定理集）不是任何一个形式系统的正空间（定理集）。  </p>
+<p>换个更专业的描述即是，存在非递归的递归可枚举集。这里“递归可枚举”（缩写r.e.）对应艺术上的流畅可画出，简而言之就是可以按照印符规则生成的集合（所有形式的系统定理集）；“递归”则是对应倍流畅，意思是不仅它本身是r.e.，其补集也是r.e.。  </p>
+<p>这就导致了存在一些形式系统，它们没有用印符规则表述的判断过程。  </p>
+<p>关于这个论点的证明，作者没有详细给出，只是把上面的事实“当作信念而接受”。后面以所有图形都是倍流畅的吗来类比所有的集合都是递归的吗，然后完结这一个议题。  </p>
+<p>最后部分给出了生成素数的形式系统，使用不整除和没有因子的规则来形成单向测试，这里不详细记录了。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/06/27/关于形式系统/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/06/28/图形与衬底/';
+var disqus_title = '《哥德尔·艾舍尔·巴赫——集异璧之大成》其三';
+var disqus_url = 'https://lamply.github.io/2018/06/28/图形与衬底/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
