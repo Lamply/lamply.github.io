@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 深度学习方法的人脸对齐 · SlideWater</title><meta name="description" content="深度学习方法的人脸对齐 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">深度学习方法的人脸对齐</h1><div class="post-info">Jul 19, 2018</div><div class="post-content"><figure align="center"><br><img src="/2018/07/19/face-alignment-cnn/1.png" alt="1"><br></figure>
+
+<p>这部分是去年 9 月份开始的工作，算是第一次真正踏入深度学习的领域。具体工作也还算简单，就是复现一篇深度学习方法做的人脸对齐，当练练手。<br><a id="more"></a></p>
+<h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>因为深度学习的发展，很多传统的计算机视觉技术有了突破性进展，市面上也涌现了不少以前技术无法做到的产品，传统的像人脸检测、人脸对齐方面也有很大进步。这里就谈谈其中的一个，Deep Alignment Network [1]（下面简写 DAN）。  </p>
+<p>DAN 是用卷积神经网络做人脸对齐的工作，大致思想就是级联卷积神经网络，每阶段都包含前一阶段的输出作为输入，输出 bias，加上 bias 并摆正人脸关键点和输入图，用 输出点生成的 heatmap + 最后一层卷积输出的特征 reshape 图 + 摆正后的原图 作为下一阶段的输入。这样就能不断修正，以达到 robust 的结果。  </p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>作者在 GitHub 上开源了代码 [2]，用的是 Theano 实现。除了验证集设置、initshape 部分冗余 和 测试的部分代码 外，其他部分应该都是没问题的，直接训练得到的结果除了 Challenging subset 稍微要差一些外，其他都和论文一致，算是比较好复现的一个了。  </p>
+<p>我用的是 caffe 做复现，一方面是方便部署到安卓，另一方面是简单好用，改起来也容易。当时还没有 TensorFlow Lite，从各个方面来说 TensorFlow 都不太方便。当然，现在 TensorFlow 就更厉害了。  </p>
+<p>大体上要做的事就是先实现一阶段，写好方便训练、测试用的 python 代码，把数据集封装成 hdf5。因为一阶段没用到自定义层，所以直接写出网络结构的 prototxt 和 solver 就能训练了，训练好后就能作为二阶的 pre-trained model。当然一阶相当于直接 VGG + 回归输出，所以也可以直接看到效果了，我训练出来测试结果如下（测试方法对应代码里的 centers，也就是 inter-pupil normalization error）:  </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Full set (%)</th>
+<th style="text-align:center">Common subset (%)</th>
+<th style="text-align:center">Challenging subset (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">6.09</td>
+<td style="text-align:center">5.29</td>
+<td style="text-align:center">9.37</td>
+</tr>
+</tbody>
+</table>
+<p>因为训练过程稍有不同，参数也没怎么调，而且后面发现 heatmap 有一点小问题，这个结果和原代码一阶训练的结果有些差异（AUC 差大约 3%），不过无妨，这个结果已经比传统的方法要强得多了，我们继续二阶训练。  </p>
+<p>二阶大部分代码可以和一阶共用，主要要做的部分就是把论文提到的几个自定义层实现，对应这四个地方：</p>
+<ol>
+<li>根据第一阶预测的结果和 mean shape 对比求出仿射变换参数</li>
+<li>根据仿射变换参数对输入图做仿射变换，也就是对正原图啦</li>
+<li>根据仿射变换参数对第一阶预测的结果做仿射变换，当然还要包括反变换的实现</li>
+<li>根据对正的一阶预测结果产生 heatmap  </li>
+</ol>
+<p>然后还有一些 caffe 不支持的又比较常用的层，也就是 resize 层（也有叫 Interp 层或者 upsample 层，都是做插值，我个人认为最好用和部署框架相同的算法）。还有 loss 层，这个会影响到测试的结果和实际效果，我用的是和测试方法一致的度量来做 loss。  </p>
+<p>写好这些层的代码后还有两件事要做。一是单独测试每一层的输出，确保每层前向都各自没问题；二是要做 gradient check，保证反向传播的梯度数值正确。  </p>
+<p>完成一切之后，用一阶段模型作 pre-trained model，进行训练：</p>
+<div align="center"><br><img src="/2018/07/19/face-alignment-cnn/3.jpg" width="80%"><br>训练过程<br></div>
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>最终结果：  </p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Full set (%)</th>
+<th style="text-align:center">Common subset (%)</th>
+<th style="text-align:center">Challenging subset (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">5.02</td>
+<td style="text-align:center">4.30</td>
+<td style="text-align:center">7.95</td>
+</tr>
+</tbody>
+</table>
+<p>可以看到和论文结果已经很接近了，这个任务也就大致完成了。比较遗憾的是这个网络不太好替换，后来我尝试把 backbone 从 VGG 更换成其他的轻量型网络，效果都不太理想，而且一到二阶段时由于三张原尺寸图 concat 做输入导致网络参数和运算量剧增也是一个很大的问题。另外，训练过程也可以看到存在非常大的过拟合。虽然有很多地方可以改进，不过毕竟不是首要的研发项目，所以后面就没有做下去了。</p>
+<p>整个网络的结构框图如下：</p>
+<figure align="center"><br><img src="/2018/07/19/face-alignment-cnn/2.png" width="60%"><br></figure>
+
+
+
+
+
+
+
+<p>[参考文献]:<br>[1] <a href="https://arxiv.org/pdf/1706.01789.pdf" target="_blank" rel="noopener">《Deep Alignment Network: A convolutional neural network for robust face alignment》</a><br>[2] github: <a href="https://github.com/MarekKowalski/DeepAlignmentNetwork" target="_blank" rel="noopener">MarekKowalski/DeepAlignmentNetwork
+</a>  </p>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/07/15/face-alignment/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/07/19/face-alignment-cnn/';
+var disqus_title = '深度学习方法的人脸对齐';
+var disqus_url = 'https://lamply.github.io/2018/07/19/face-alignment-cnn/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
