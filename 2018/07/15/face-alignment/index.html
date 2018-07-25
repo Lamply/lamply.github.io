@@ -17,17 +17,17 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">4.85</td>
-<td style="text-align:center">-</td>
-<td style="text-align:center">-</td>
+<td style="text-align:center">4.75</td>
+<td style="text-align:center">4.09</td>
+<td style="text-align:center">7.47</td>
 </tr>
 </tbody>
 </table>
-<p>当然了，因为这个测试数字是用了五点 ground truth 做抖动得到的，所以没严格的参考价值，无法和其他公开方法做比较，不过也能反映这种方法的有效性。   </p>
+<p>当然了，因为这个测试数字是用了五点 ground truth 做抖动的前提下得到的，所以没严格的参考价值，无法和其他公开方法做比较，不过也能反映这种方法的有效性。   </p>
 <p>最终做了三个模型，分别是有五点先验的 68 点、106 点，以及没有五点先验的 106 点。模型大小都是 5MB 左右， 在小米 mix2 上速度 20ms 左右。demo 效果大致如下：</p>
 <figure align="center"><br><img src="/2018/07/15/face-alignment/2.png" width="80%"><br></figure>  
 
-<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>关于训练数据集其实还有非常多要写，比如我这里只用了 300-w 数据集，在这基础上翻转、模糊、调对比度，还有关于如何将 68 点数据集扩增到 106 点的，也参考复现了几篇论文。还有的话就是安卓端的部署，包括算法的移植，运算速度的优化，模型的压缩等等。之后有空的话可能会整理补上。</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>关于训练数据集其实还有非常多要写，比如我这里只用了 300-w 数据集，在这基础上翻转、模糊、调对比度，还有关于如何将 68 点数据集扩增到 106 点的，也参考复现了几篇论文。还有的话就是安卓端的部署，包括算法的移植、接口封装，运算速度的优化，模型的压缩等等。之后有空的话可能会整理补上。</p>
 <p>[参考文献]:<br>[1] <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2013/papers/Xiong_Supervised_Descent_Method_2013_CVPR_paper.pdf" target="_blank" rel="noopener">《Supervised Descent Method and its Applications to Face Alignment》</a><br>[2] github: <a href="https://github.com/patrikhuber/superviseddescent" target="_blank" rel="noopener">patrikhuber/superviseddescent
 </a><br>[3] <a href="http://pdfs.semanticscholar.org/5c82/0e47981d21c9dddde8d2f8020146e600368f.pdf" target="_blank" rel="noopener">《Extended Supervised Descent Method for Robust Face Alignment》</a></p>
 </div></article></div></main><footer><div class="paginator"><a href="/2018/07/19/face-alignment-cnn/" class="prev">PREV</a><a href="/2018/07/11/一致性完全性与几何学/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
