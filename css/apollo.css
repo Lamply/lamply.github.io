@@ -367,7 +367,7 @@ body {
   font-size: 15px;
   line-height: 2.4;
   background-color: #fff;
-  font-family: 'sourcesanspro', 'Helvetica Neue', Arial, sans-serif; }
+  font-family: 'AndaleMono', 'Helvetica Neue', Arial, sans-serif; }
 
 ul.nav,
 ul.post-list {
@@ -797,8 +797,8 @@ footer {
       color: #888; }
 
 @font-face {
-  font-family: 'sourcesanspro';
-  src: url("../font/sourcesanspro.woff2") format("woff2"), url("../font/sourcesanspro.woff") format("woff");
+  font-family: 'AndaleMono';
+  src: url("../font/AndaleMono.ttf") format("ttf");
   font-weight: normal;
   font-style: normal; }
 
