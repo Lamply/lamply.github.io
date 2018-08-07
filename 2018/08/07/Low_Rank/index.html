@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Coordinating Filters for Faster Deep Neural Networks · SlideWater</title><meta name="description" content="Coordinating Filters for Faster Deep Neural Networks - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Coordinating Filters for Faster Deep Neural Networks</h1><div class="post-info">Aug 7, 2018</div><div class="post-content"><div align="center"><br><img src="/2018/08/07/Low_Rank/ForceRegularization.png"><br></div>
+
+<p>这篇论文是在学习压缩模型时无意中看到的，发表在 ICCV 2017。因为看到它的 motivation 觉得挺有意思的（昴星团瞩目），刚好还有代码，于是就学习了一下，顺带看看能不能用在项目上。  </p>
+<p>原文链接： <a href="https://arxiv.org/abs/1703.09746" target="_blank" rel="noopener">Coordinating Filters for Faster Deep Neural Networks</a><br><a id="more"></a></p>
+<h3 id="原文理解"><a href="#原文理解" class="headerlink" title="原文理解"></a>原文理解</h3><ul>
+<li>压缩和加速 DNN 模型的工作</li>
+<li>常规压缩 <em>sparsity-based</em> 方法 <em>Low-Rank Approximations ( LRA )</em>:<ul>
+<li>可以不必经过仔细的硬件/软件设计就能压缩和加速 DNN</li>
+<li>原理在于滤波器之间冗余(相关性), 把大的矩阵近似成两个小矩阵相乘</li>
+<li>此工作专注于压缩已经训练好的模型来达到最大化减小计算复杂性, 然后 retrain 来保持精度</li>
+</ul>
+</li>
+<li>本工作注重训练出 <em>Lower-Rank Space</em> 的 DNN, 提出了 <em>Force Regularization</em>:<ul>
+<li>主要是通过引入额外梯度 ( <em>attractive forces</em> ) 微调参数来增强滤波器的相关性, 从而使得 LRA 后能获得更小的参数量</li>
+</ul>
+</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>首先介绍 cross-filter LRA :<br>LRA 为将大矩阵<br>$$W\in\mathbb{R}^{N \times C \times H \times W}$$<br>分解为一个低秩矩阵和一个1x1的卷积偏移<br>$$\beta_m\in\mathbb{R}^{M \times C \times H \times W}, b\in\mathbb{R}^{1 \times C \times H \times W}$$<br>那么输出的 feature map 为:  </p>
+<p> $$O_n\approx(\sum^M_{m=1}b_m^{(n)}\beta_m)*I = \sum^M_{m=1}(b_m^{(n)}F_m)$$  </p>
+<p>这里的<br>$$F_m = \beta_m * I$$<br>所以输出即低秩矩阵与输入的卷积的线性组合  </p>
+<p>从数学层面上看 <em>Force Regularization</em>:<br>$$\Delta W_i = \sum^N_{j=1}\Delta W_{ij} = ||W_i||\sum^N_{j=1}(f_{ji}-f_{ji}w_i^Tw_i)$$<br>$$W_i \gets W_i-\eta \cdot (\frac{\partial E(W)}{\partial W_i}-\lambda_s \cdot \Delta W_i)$$</p>
+<div align="center"><br><img src="/2018/08/07/Low_Rank/fig_math.png"><br></div>
+
+<p>在物理层面上看 <em>Force Regularization</em> , 像是引力将参数聚集在一起</p>
+<blockquote>
+<p>Suppose eachvectorwiis a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick ismassless and can freely spin around the origin. Given thepair-wise attractive forces (e.g.,universal gravitation) f_ji,Eq. (2) is the acceleration of particlei. As the forces are at-tractive, neighbor particles tend to spin around the origin toassemble together.  </p>
+</blockquote>
+<p>作者认为, 增加 <em>Force Regularization</em> 可以让一簇滤波器趋向于有相同的方向, 而由于数据损失梯度的存在使得该正则项不影响原本滤波器提取有判别力的特征的能力(存疑)</p>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>实验使用 baseline 作为 pretrained model. 原因是在相同最大迭代次数下, 从 baseline 开始训练比从头开始要有更好的精准度和速度提升的tradeoff, 因为 pretrained model 提供了精准度和高关联性的初始化条件.  </p>
+<p>实验结论:</p>
+<ul>
+<li><em>Force Regularization</em> 能在低层卷积保持低秩特性, 然后在高层卷积时有很大的压缩, 总体上看 rank ratio (低秩和全秩比) 大约为50%.  </li>
+<li>L2norm 在高 rank ratio 时表现得比较好, L1norm 在潜在低 rank ratio 时表现得更好.</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/08/07/Low_Rank_Research/" class="prev">PREV</a><a href="/2018/08/07/caffe_things/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/08/07/Low_Rank/';
+var disqus_title = 'Coordinating Filters for Faster Deep Neural Networks';
+var disqus_url = 'https://lamply.github.io/2018/08/07/Low_Rank/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

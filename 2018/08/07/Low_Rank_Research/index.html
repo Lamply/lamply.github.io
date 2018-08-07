@@ -1,0 +1,138 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 关于 LRA 和 Force Regularization 的探索 · SlideWater</title><meta name="description" content="关于 LRA 和 Force Regularization 的探索 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">关于 LRA 和 Force Regularization 的探索</h1><div class="post-info">Aug 7, 2018</div><div class="post-content"><p>这部分是将上一篇提到的 <em>Force Regularization</em> 和 <em>LRA</em> 用于实际项目的效果，虽然现在看来不是很严谨，不过算是一次很好的尝试。<br><a id="more"></a></p>
+<h3 id="设定"><a href="#设定" class="headerlink" title="设定"></a>设定</h3><p>为了探索 <em>Low-Rank Approximations ( LRA )</em> 和 <em>Force Regularization</em>  ( 参考 <em>Wen. “Coordinating Filters for Faster Deep Neural Networks” ICCV 2017</em> ) 在我的工程上的实际效果, 进行了一些实际测试. 由于时间限制, 主要进行了两次探索, 分别为:</p>
+<ul>
+<li>LRA<ul>
+<li>单次大降秩(rank ratio 0.48)</li>
+<li>在大降秩的基础上小降秩(rank ratio 0.8)</li>
+</ul>
+</li>
+<li>LRA + Force Regularization<ul>
+<li>多次迭代 LRA (每次 rank ratio 0.9), FR (0.003 Degradation)</li>
+</ul>
+</li>
+</ul>
+<p>此外还有在 MNIST 上对 LeNet 的对照测试, 结果与文中叙述结论基本一致, Force Regularization 后 LRA 带来的压缩率有进一步的提高, 但主要在全连接层体现 (实验时卷积层个数完全没变), 尚未使用其他网络进行测试, 也没有观察出 Force Regularization 后卷积核的变化, 可能需要进一步实验 (调整 Force Regularization 参数, 用更好的可视化方法 t-SNE 等)</p>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><ul>
+<li>原模型结果</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">测试</th>
+<th style="text-align:center">分数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">原准确率</td>
+<td style="text-align:center">0.8993</td>
+</tr>
+<tr>
+<td style="text-align:center">原召回率</td>
+<td style="text-align:center">0.9017</td>
+</tr>
+<tr>
+<td style="text-align:center">F1-Score</td>
+<td style="text-align:center">0.8919</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>LRA<br>  单次 0.48 大降秩后 finetune 17300 iters, 接着 0.8 小降秩 finetune 40000 iters:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">测试</th>
+<th style="text-align:center">0.48分数</th>
+<th style="text-align:center">0.48+0.8分数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">准确率</td>
+<td style="text-align:center">0.8947</td>
+<td style="text-align:center">0.9181</td>
+</tr>
+<tr>
+<td style="text-align:center">召回率</td>
+<td style="text-align:center">0.8868</td>
+<td style="text-align:center">0.8157</td>
+</tr>
+<tr>
+<td style="text-align:center">F1-Score</td>
+<td style="text-align:center">0.8813</td>
+<td style="text-align:center">0.8489</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>LRA + Force Regularization<br>此版本由于原工程正在改进, 所以使用了新的方法 (修改了网络输出层的卷积个数以及输入的通道数, 准确率略微提高, 召回率变化不大)<br>在新方法训练的模型下进行 0.003 Degradation 的 Force Regularization, 400 iters ( 50 iters/epoch ) 后 0.9 rank ratio 降秩, finetune 1000 iters后 继续 0.9 rank ratio 降秩, finetune 1300 iters 后得到收敛结果</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">测试</th>
+<th style="text-align:center">源模型 FR</th>
+<th style="text-align:center">第一次降秩</th>
+<th style="text-align:center">第二次降秩</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">准确率</td>
+<td style="text-align:center">0.9252</td>
+<td style="text-align:center">0.9207</td>
+<td style="text-align:center">0.9228</td>
+</tr>
+<tr>
+<td style="text-align:center">召回率</td>
+<td style="text-align:center">0.7729</td>
+<td style="text-align:center">0.8520</td>
+<td style="text-align:center">0.8443</td>
+</tr>
+<tr>
+<td style="text-align:center">F1-Score</td>
+<td style="text-align:center">0.8298</td>
+<td style="text-align:center">0.8731</td>
+<td style="text-align:center">0.8698</td>
+</tr>
+</tbody>
+</table>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ol>
+<li>从 LRA 可以看出, 单次大降秩也能恢复到接近源模型的效果(召回率下降大约2%), 模型大小压缩明显(12.7M =&gt; 4.8M), 但是再度降秩模型效果开始较大幅度下降(召回率再度下降7%), 且模型大小变化不大(4.8M =&gt; 3.7M)</li>
+<li>FR 后模型的召回率迅速降低, 但理论上在此基础上再进行多次降秩并最终 finetune 应该是能恢复效果的, 问题 loss 已经几乎收敛, 无法看出有明显下降, 召回率仍然有较大损失, 所以怀疑可能需要降低训练 force regularization, 和 learning rate, 或者有可能是 FR 未足够 finetune 的问题??  </li>
+</ol>
+<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>进行了FR再测试, 对原模型进行了更久的 finetune, 得到</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">测试</th>
+<th style="text-align:center">分数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">准确率</td>
+<td style="text-align:center">0.9194</td>
+</tr>
+<tr>
+<td style="text-align:center">召回率</td>
+<td style="text-align:center">0.9018</td>
+</tr>
+<tr>
+<td style="text-align:center">F1-Score</td>
+<td style="text-align:center">0.9030</td>
+</tr>
+</tbody>
+</table>
+<p>对于速度, 进行了几个小实验, 似乎该方法在小网络上会由于增加卷积层所以减慢前向速度, 而且比起低秩增速, 卷积层的增加带来的负面影响似乎更大. 至少以本项目来说是有些许降速的.</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/08/07/Low_Rank/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/08/07/Low_Rank_Research/';
+var disqus_title = '关于 LRA 和 Force Regularization 的探索';
+var disqus_url = 'https://lamply.github.io/2018/08/07/Low_Rank_Research/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

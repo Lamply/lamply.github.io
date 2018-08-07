@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lamply.github.io/2018/08/07/Low_Rank_Research/</loc>
+    
+    <lastmod>2018-08-07T06:21:01.998Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lamply.github.io/2018/08/07/Low_Rank/</loc>
+    
+    <lastmod>2018-08-07T06:20:00.375Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://lamply.github.io/2018/08/07/caffe_things/</loc>
     
     <lastmod>2018-08-07T04:52:32.934Z</lastmod>
