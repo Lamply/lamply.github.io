@@ -1,0 +1,88 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Caffe使用问题记录 · SlideWater</title><meta name="description" content="Caffe使用问题记录 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Caffe使用问题记录</h1><div class="post-info">Aug 7, 2018</div><div class="post-content"><p>以往在使用 caffe 中遇到的部分问题记录。<br><a id="more"></a></p>
+<h4 id="缺陷记录"><a href="#缺陷记录" class="headerlink" title="缺陷记录"></a>缺陷记录</h4><ul>
+<li><code>Xavier</code>初始化没有乘上增益 (ReLU应乘根号2, 等等)</li>
+<li>在matlab上训练得出的模型是col-major,需要将所有矩阵参数转置才能在其他地方用</li>
+<li>老版本caffe在初次前向时会比较慢, 新版未知</li>
+<li>caffe 初始化数据层时启动线程是 <strong>TEST</strong> 和 <strong>TRAIN</strong> 并行进行的, 即使将<code>test_initialization</code>设置为<code>false</code>也会进行一次<strong>TEST</strong>的数据 prefetch,  同样会进行<code>Transform</code>, 所以要注意相关的共享变量.</li>
+<li>BatchNorm 的 eps 默认为 1e-5, 这个数值是 切实 会对结果产生一定影响的, 在 absorb 参数时也要注意</li>
+</ul>
+<h4 id="过程记录"><a href="#过程记录" class="headerlink" title="过程记录"></a>过程记录</h4><ul>
+<li>后向根据<code>top_diff</code>和前向结果算出各<code>blob</code>参数的<code>diff</code>, 以及<code>bottom</code>的<code>diff</code>, 所以分别对<code>blob</code>和<code>bottom</code>求导</li>
+<li>传播时记得不同微分层乘上前面的梯度值<code>top_diff</code>,后传多个梯度值的话全部加起来</li>
+<li><code>setup</code>是在加载网络时调用的, 加载完后不再调用</li>
+</ul>
+<h4 id="错误记录"><a href="#错误记录" class="headerlink" title="错误记录"></a>错误记录</h4><ol>
+<li>Check failed: data_<ul>
+<li>为 <code>blob shape</code> 错误, 一般是 <code>reshape</code> 函数出错, 也可能是网络设计错误导致 <code>shape</code> 传过来时负值错误</li>
+</ul>
+</li>
+</ol>
+<h4 id="问题记录"><a href="#问题记录" class="headerlink" title="问题记录"></a>问题记录</h4><ol>
+<li>caffe模型测试时<code>batch_norm</code>层的use_global_stats设为false居然没影响????  错觉</li>
+<li>训练过程开始良好, 中途出现后方部分卷积开始死亡(参数值非常低), 然后向前传染, 大部分卷积死亡, 表现为验证集上非常不稳定<ul>
+<li>推测是ReLU死亡</li>
+</ul>
+</li>
+<li>caffe 和 opencv 一起 import 会出错<ul>
+<li>added <code>-Wl,-Bstatic -lprotobuf -Wl,-Bdynamic</code> to <code>LDFLAGS</code> and removed <code>protobuf</code> from <code>LIBRARIES</code> ( 参照 <a href="https://github.com/BVLC/caffe/issues/1917" target="_blank" rel="noopener">https://github.com/BVLC/caffe/issues/1917</a> )</li>
+</ul>
+</li>
+</ol>
+<h4 id="犯2记录"><a href="#犯2记录" class="headerlink" title="犯2记录"></a>犯2记录</h4><ol>
+<li><code>resize</code>层或者叫<code>upsample</code> <code>upscale</code> 层, 若训练时使用的缩放算法不同, 在卷积到比较小的时候(4x4)之类的, 会由于策略差异导致缩放前后误差非差大</li>
+<li>test 或 upgrade 时 model 和 prototxt 写反<blockquote>
+<p>[libprotobuf ERROR google/protobuf/text_format.cc:274] Error parsing text-format caffe.NetParameter: 2:1: Invalid control characters encountered in text.<br>…..<br><strong><em> Check failure stack trace: </em></strong><br>已放弃 (核心已转储)</p>
+</blockquote>
+</li>
+<li>二分类问题 SoftmaxWithLoss 层不要设 ignore_label, ignore_label 是会忽略该 label 的 loss 和 diff 传递, 导致结果会完全倒向另一个 label , 因为 SoftmaxWithLoss 是计算准确率来算 loss 的</li>
+</ol>
+<h4 id="常见安装问题"><a href="#常见安装问题" class="headerlink" title="常见安装问题"></a>常见安装问题</h4><ol>
+<li><p>一般常见 protobuf 问题, 因为 Tensorflow 也用 protobuf, 不仅用, 还会自动升级 protobuf, 而 caffe 不怎么支持新版本的 protobuf, 所以如果配置了其他开源库的开发环境之后 caffe 报错了, 基本可以从几个方面检查 protobuf 有没问题.</p>
+<ul>
+<li><code>pip list</code>, 查看 protobuf 版本, 一般 2.6.1 比较通用, 如果是 3.5 那就换吧. 如果同时使用了 python2.7 和 python 3.5 的话那还要注意 pip 也分 pip2 和 pip3, 安装的库也分别独立. 可以在 <code>/usr/bin</code>, <code>/usr/local/bin</code>, <code>/$HOME/.local/bin</code> 下找到 pip 脚本, 打开就能看到它用的是 python2.7 还是 python3.5. ( <em>然后出现了下一个问题</em> )</li>
+<li><code>protoc --version</code>, protobuf 依赖的东西, 查看它的版本和 protobuf 的是否一样, 不一样的话可以通过下载相应版本 release, 或者从源码安装 protobuf. 然后在 <code>/etc/ld.so.conf</code> 里面添加上一行 <code>/usr/local/lib</code>, 然后 <code>sudo ldconfig</code> 更新下链接库就行了. ( <em>然后出现了下一个问题</em> )</li>
+<li><code>apt list | grep &quot;protobuf&quot;</code>, 有时候会有用 <code>apt-get install</code> 和 <code>pip install</code> 装了两种不同版本的 protobuf 的情况, 这时候可以 <code>apt</code> 删除并重新安装 protobuf ( <em>然后出现了下一个问题</em> )</li>
+<li><code>File already exists in database: caffe.proto</code>, 库链接问题或者版本问题 ( 2.6.1 不好用 ), <code>pip uninstall protobuf</code> 删掉 protobuf, 重启, 加 -fPIC 到 configure, 然后 <code>./configure --disable-shared</code>, 然后在 protobuf 3.3 版本下 <code>cd $PROTOBUF_BUILD_DIR/python</code>, <code>python setup.py build</code>, <code>python setup.py test</code>, <code>python setup.py install</code> ( <em>然而出现了下一个问题</em> )<ul>
+<li>还可能是 caffe 玄学问题, 总之最简单的就是直接把能用的 caffe 替换过来</li>
+</ul>
+</li>
+<li><code>make all</code> 时出现一堆 protobuf 未定义的引用问题. ( <em>未解, 回溯 2.6.1</em> )</li>
+<li><p>2.6.1:</p>
+<ul>
+<li><code>caffe_pb2.py: syntax error</code>, 注释掉默认 caffe 的 <code>python/caffe/proto/caffe_pb2.py</code>, 至于为什么项目 caffe 没有用自己的 <code>caffe_pb2.py</code> 而用到默认 caffe, 是因为没有成功 <code>make pycaffe</code> ??? 总之应该是版本问题.</li>
+<li><p><code>File already exists in database: caffe.proto</code> 依旧存在这个问题, 在 <code>import caffe</code> 后 <code>import cv2</code> 会发生, 还是需要静态链接 protobuf, 这样可以解决:</p>
+<ul>
+<li><blockquote>
+<p>linking caffe against libprotobuf.a instead of libprotobuf.so could solve this issue</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>I changed caffe’s Makefile. Specifically, I added -Wl,-Bstatic -lprotobuf -Wl,-Bdynamic to LDFLAGS and removed protobuf from LIBRARIES.<br>I have uploaded my Makefile to gist (<a href="https://gist.github.com/tianzhi0549/773c8dbc383c0cb80e7b)" target="_blank" rel="noopener">https://gist.github.com/tianzhi0549/773c8dbc383c0cb80e7b)</a>. You could check it out to see what changes I made (Line 172 and 369).</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><code>File &quot;/usr/lib/python2.7/dist-packages/caffe/pycaffe.py&quot;, line 13, in &lt;module&gt;
+from ._caffe import Net, SGDSolver, NesterovSolver, AdaGradSolver,
+libcaffe.so.1.0.0: cannot open shared object file: No such file or directory</code>. 这是 python 又喵了咪了用了默认 release 版 caffe, 删掉 <code>/usr/lib/python2.7/dist-packages/caffe</code>, 然后在工程头处 <code>import sys</code> 加<code>sys.path.insert(&#39;/home/sad/ENet/caffe-enet/python&#39;)</code> 和 <code>sys.path.insert(&#39;/home/sad/ENet/caffe-enet/python/caffe&#39;)</code> 再 <code>import caffe</code>, 问题终于解决!</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>libcudnn.so.5: cannot open shared object file: No such file or directory</code>, ld 抽风, 需要专门刷新下 cuda 链接路径 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ldconfig /usr/local/cuda-8.0/lib64</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>*** SIGSEGV (@0x100000049) received by PID 703 (TID 0x7f52cbb1c9c0) from PID 73; stack trace: ***</code> 或者 <code>Segmentation fault (core dumped)</code>, 可能是 python 层的使用出了问题</p>
+</li>
+<li>段错误, <code>import caffe</code> 退出后错误, 有可能是用了 opencv contrib 的 <code>LIBRARY</code>, 在 <code>Makefile</code> 里删掉 <code>opencv_videoc</code> 什么的…</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/07/19/face-alignment-cnn/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/08/07/caffe_things/';
+var disqus_title = 'Caffe使用问题记录';
+var disqus_url = 'https://lamply.github.io/2018/08/07/caffe_things/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

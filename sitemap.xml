@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lamply.github.io/2018/08/07/caffe_things/</loc>
+    
+    <lastmod>2018-08-07T04:52:32.934Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lamply.github.io/2018/07/19/face-alignment-cnn/</loc>
+    
+    <lastmod>2018-08-06T06:50:29.341Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lamply.github.io/2018/07/15/face-alignment/</loc>
+    
+    <lastmod>2018-08-06T05:50:18.317Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://lamply.github.io/2018/07/11/%E4%B8%80%E8%87%B4%E6%80%A7%E5%AE%8C%E5%85%A8%E6%80%A7%E4%B8%8E%E5%87%A0%E4%BD%95%E5%AD%A6/</loc>
     
     <lastmod>2018-07-25T07:40:38.910Z</lastmod>
@@ -12,20 +33,6 @@
     <loc>https://lamply.github.io/2018/04/11/water/</loc>
     
     <lastmod>2018-07-22T06:13:07.186Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://lamply.github.io/2018/07/15/face-alignment/</loc>
-    
-    <lastmod>2018-07-20T09:27:50.185Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://lamply.github.io/2018/07/19/face-alignment-cnn/</loc>
-    
-    <lastmod>2018-07-19T07:58:48.876Z</lastmod>
     
   </url>
   
