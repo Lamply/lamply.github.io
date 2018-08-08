@@ -23,7 +23,7 @@
 
 <p>在物理层面上看 <em>Force Regularization</em> , 像是引力将参数聚集在一起</p>
 <blockquote>
-<p>Suppose eachvectorwiis a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick ismassless and can freely spin around the origin. Given thepair-wise attractive forces (e.g.,universal gravitation) f_ji,Eq. (2) is the acceleration of particlei. As the forces are at-tractive, neighbor particles tend to spin around the origin toassemble together.  </p>
+<p>Suppose each vector <code>w_i</code> is a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick is massless and can freely spin around the origin. Given the pair-wise attractive forces (e.g.,universal gravitation) <code>f_ji</code>,Eq. (2) is the acceleration of particle <code>i</code>. As the forces are attractive, neighbor particles tend to spin around the origin to assemble together.  </p>
 </blockquote>
 <p>作者认为, 增加 <em>Force Regularization</em> 可以让一簇滤波器趋向于有相同的方向, 而由于数据损失梯度的存在使得该正则项不影响原本滤波器提取有判别力的特征的能力(存疑)</p>
 <h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>实验使用 baseline 作为 pretrained model. 原因是在相同最大迭代次数下, 从 baseline 开始训练比从头开始要有更好的精准度和速度提升的tradeoff, 因为 pretrained model 提供了精准度和高关联性的初始化条件.  </p>
