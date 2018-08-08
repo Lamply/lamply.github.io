@@ -74,6 +74,15 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: apollo
 
+mathjax: true
+
+# hexo-tag-cloud
+tag_cloud:
+    textFont: Trebuchet MS, Helvetica
+    textColour: \#333
+    textHeight: 25
+    outlineColour: \#E2E1D1
+
 archive_generator:
   per_page: 0
   yearly: false
