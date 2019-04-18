@@ -15,6 +15,7 @@
 <h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><ul>
 <li>原模型结果</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -37,9 +38,11 @@
 </tr>
 </tbody>
 </table>
+</div>
 <ul>
 <li>LRA<br>  单次 0.48 大降秩后 finetune 17300 iters, 接着 0.8 小降秩 finetune 40000 iters:</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -66,9 +69,11 @@
 </tr>
 </tbody>
 </table>
+</div>
 <ul>
 <li>LRA + Force Regularization<br>此版本由于原工程正在改进, 所以使用了新的方法 (修改了网络输出层的卷积个数以及输入的通道数, 准确率略微提高, 召回率变化不大)<br>在新方法训练的模型下进行 0.003 Degradation 的 Force Regularization, 400 iters ( 50 iters/epoch ) 后 0.9 rank ratio 降秩, finetune 1000 iters后 继续 0.9 rank ratio 降秩, finetune 1300 iters 后得到收敛结果</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -99,11 +104,13 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ol>
 <li>从 LRA 可以看出, 单次大降秩也能恢复到接近源模型的效果(召回率下降大约2%), 模型大小压缩明显(12.7M =&gt; 4.8M), 但是再度降秩模型效果开始较大幅度下降(召回率再度下降7%), 且模型大小变化不大(4.8M =&gt; 3.7M)</li>
 <li>FR 后模型的召回率迅速降低, 但理论上在此基础上再进行多次降秩并最终 finetune 应该是能恢复效果的, 问题 loss 已经几乎收敛, 无法看出有明显下降, 召回率仍然有较大损失, 所以怀疑可能需要降低训练 force regularization, 和 learning rate, 或者有可能是 FR 未足够 finetune 的问题??  </li>
 </ol>
 <h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>进行了FR再测试, 对原模型进行了更久的 finetune, 得到</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -126,6 +133,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>对于速度, 进行了几个小实验, 似乎该方法在小网络上会由于增加卷积层所以减慢前向速度, 而且比起低秩增速, 卷积层的增加带来的负面影响似乎更大. 至少以本项目来说是有些许降速的.</p>
 </div></article></div></main><footer><div class="paginator"><a href="/2018/08/07/Low_Rank/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
 var disqus_identifier = '2018/08/07/Low_Rank_Research/';
@@ -135,4 +143,4 @@ var disqus_url = 'https://lamply.github.io/2018/08/07/Low_Rank_Research/';
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2018 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2019 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
