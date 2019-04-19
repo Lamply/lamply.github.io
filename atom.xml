@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>SlideWater</title>
+  <title>In un&#39;altra vita</title>
   
   
   <link href="/atom.xml" rel="self"/>
@@ -270,9 +270,9 @@
     <link href="https://lamply.github.io/2017/10/17/Kaggle/"/>
     <id>https://lamply.github.io/2017/10/17/Kaggle/</id>
     <published>2017-10-17T05:13:06.000Z</published>
-    <updated>2019-04-18T10:18:06.694Z</updated>
+    <updated>2019-04-19T17:40:01.650Z</updated>
     
-    <content type="html"><![CDATA[<p>看了 Kaggle 亚马逊雨林卫星图分类比赛第一名 <a href="http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-interview/" target="_blank" rel="noopener">Planet: Understanding the Amazon from Space, 1st Place Winner’s Interview</a>, 学到了些 trick, 这里记录一下  </p><ol><li><p>关于 precision 和 recall 的权衡, 可以在原有的 log loss 上增加 $F_\beta$-score loss 来达到, 如:</p><script type="math/tex; mode=display">F_1 = 2\cdot\frac{precision\cdot recall}{precision+recall}</script><p>而</p><script type="math/tex; mode=display">F_\beta = (1+\beta^2)\cdot\frac{precision\cdot recall}{(\beta^2\cdot precision)+recall}</script><p>使用 $F<em>2$-score 时, 代表 recall 比 precision 重要, $F</em>{0.5}$-score, 代表 precision 比 recall 重要  </p></li><li><p>关于分类标签变量存在相关或部分对立的情况下的预测, 可以对最后一层输出的概率使用 ridge regression ( 岭回归, 即加了 L2 正则项的最小二乘, 鼓励回归参数尽可能利用到所有的相关变量, 惩罚可能存在的个别变量 dominant 的大正负值参数 cancel 得出结果的情况 ). 该方法也可以用在 ensemble 多个模型上, 最终对输出结果做 ridge regression</p></li></ol>]]></content>
+    <content type="html"><![CDATA[<p>看了 Kaggle 亚马逊雨林卫星图分类比赛第一名 <a href="http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-interview/" target="_blank" rel="noopener">Planet: Understanding the Amazon from Space, 1st Place Winner’s Interview</a>, 学到了些 trick, 这里记录一下  </p><ol><li><p>关于 precision 和 recall 的权衡, 可以在原有的 log loss 上增加 F_beta - score loss 来达到, 如:</p><script type="math/tex; mode=display">F_1 = 2\cdot\frac{precision\cdot recall}{precision+recall}</script><p>而</p><script type="math/tex; mode=display">F_\beta = (1+\beta^2)\cdot\frac{precision\cdot recall}{(\beta^2\cdot precision)+recall}</script><p>使用 F_2 - score 时, 代表 recall 比 precision 重要, F_0.5 - score, 代表 precision 比 recall 重要  </p></li><li><p>关于分类标签变量存在相关或部分对立的情况下的预测, 可以对最后一层输出的概率使用 ridge regression ( 岭回归, 即加了 L2 正则项的最小二乘, 鼓励回归参数尽可能利用到所有的相关变量, 惩罚可能存在的个别变量 dominant 的大正负值参数 cancel 得出结果的情况 ). 该方法也可以用在 ensemble 多个模型上, 最终对输出结果做 ridge regression</p></li></ol>]]></content>
     
     <summary type="html">
     
