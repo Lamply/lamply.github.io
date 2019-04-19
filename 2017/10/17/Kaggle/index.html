@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Kaggle "Amazon from Space" 经验分享 · SlideWater</title><meta name="description" content="Kaggle &quot;Amazon from Space&quot; 经验分享 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="SlideWater"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Kaggle "Amazon from Space" 经验分享</h1><div class="tags"><a href="/tags/技术经验/" class="tag-title">#技术经验</a></div><div class="post-info">Oct 17, 2017</div><div class="post-content"><p>看了 Kaggle 亚马逊雨林卫星图分类比赛第一名 <a href="http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-interview/" target="_blank" rel="noopener">Planet: Understanding the Amazon from Space, 1st Place Winner’s Interview</a>, 学到了些 trick, 这里记录一下  </p>
+<ol>
+<li><p>关于 precision 和 recall 的权衡, 可以在原有的 log loss 上增加 $F_\beta$-score loss 来达到, 如:</p>
+<script type="math/tex; mode=display">F_1 = 2\cdot\frac{precision\cdot recall}{precision+recall}</script><p>而</p>
+<script type="math/tex; mode=display">F_\beta = (1+\beta^2)\cdot\frac{precision\cdot recall}{(\beta^2\cdot precision)+recall}</script><p>使用 $F<em>2$-score 时, 代表 recall 比 precision 重要, $F</em>{0.5}$-score, 代表 precision 比 recall 重要  </p>
+</li>
+<li><p>关于分类标签变量存在相关或部分对立的情况下的预测, 可以对最后一层输出的概率使用 ridge regression ( 岭回归, 即加了 L2 正则项的最小二乘, 鼓励回归参数尽可能利用到所有的相关变量, 惩罚可能存在的个别变量 dominant 的大正负值参数 cancel 得出结果的情况 ). 该方法也可以用在 ensemble 多个模型上, 最终对输出结果做 ridge regression</p>
+</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/04/19/zero-kernels/" class="prev">PREV</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2017/10/17/Kaggle/';
+var disqus_title = 'Kaggle &quot;Amazon from Space&quot; 经验分享';
+var disqus_url = 'https://lamply.github.io/2017/10/17/Kaggle/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2019 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

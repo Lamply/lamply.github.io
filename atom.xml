@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://lamply.github.io/"/>
-  <updated>2018-08-08T07:56:03.011Z</updated>
+  <updated>2019-04-19T17:17:22.712Z</updated>
   <id>https://lamply.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>人像分割</title>
+    <link href="https://lamply.github.io/2019/04/19/protrait-segmentation/"/>
+    <id>https://lamply.github.io/2019/04/19/protrait-segmentation/</id>
+    <published>2019-04-19T09:00:06.000Z</published>
+    <updated>2019-04-19T17:17:22.712Z</updated>
+    
+    <content type="html"><![CDATA[<div align="center"><img src="/2019/04/19/protrait-segmentation/Einstein.png" width="70%">  </div><p>这部分是关于在低计算量下完成人像分割的工作，因为时间充裕，所以调查尝试得比较多，最终完成的效果还不错。<br><a id="more"></a></p><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>人像分割（portrait segmentation）属于语义分割的子集，某种程度上类似于只专注人的前景分割，可以看成是二分类的语义分割。不过这里的应用场景是半身肖像，对于效果的评价更加专注于分割边缘和细节的质量，现在看来这次的工作在这方面其实做得比较一般，只是就通常的 IoU 意义上来看还不错。 </p><p>总体来说，人像分割方面的论文比较少，典型的就是 Xiaoyong Shen 等人的工作 [1] [2]。不过实际尝试过程中发现，其中的很多技巧无法有效的应用于低计算量的场景中，固定先验的引入也会导致分割效果在某些情况下变差。  </p><h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h4 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h4><p>数据集方面因为我采取了逐步迁移训练，多次 fine-tuning 的方式，所以需要从 ImageNet 到 COCO 人像子集再到标准半身人像分割的数据集。COCO 人像子集是从 COCO 中筛选出含人类（且占面积较大）的部分，大约 4 万张；半身人像分割的数据集训练集一千多张，验证集 50 张，测试集 300 张；还有一些私有的测试集。<br>之所以这样做主要是因为最终用于应用场景的数据集过少，而且从 OSVOS[3] 等文中得到了更多的启发。</p><div align="center"><img src="/2019/04/19/protrait-segmentation/osvos.png">  OSVOS 的做法</div><h4 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h4><p>我主要尝试了 ENet [4]、FCN [5]、FCN dilated convolution 版本 [6]、UNet [7] 的改进版 以及 类 DeepLab V3+ [8] 中的方法。为了保持计算量，除了 [4] 外，我都采用了轻量化网络 ShuffleNet [9] 作为 backbone 来进行复现，大部分网络的输入限制为 224x224。  </p><p>对于 UNet 的改进版，因为是冲着实时而设计的，所以在 decoder 的设计上，尤其是底层特征的引入上显著减少了滤波器数量。当 output stride 为 4 时，可以得到的模型性能为：参数量 79.54K, FLOPS 24.44M, 访存量 46.98MB，可以达到实时。   </p><p>对于类 DeepLab V3+ 的版本，为了尽可能的压缩计算量，我最大限度的利用了 Depthwise Convolution、Dilation 以及 Channel Shuffle 的特性，同时为平衡精度将 output stride 限制为 2（损失非常少），decoder 也改成了更为节省计算量的简单版本，模型性能为：参数量 965.49K, FLOPS 743.37M, 访存量 392.87MB。  </p><blockquote><ul><li><em>来自底层特征的 skip-connection 是有很明显的边缘细化效果的，但同时也十分容易过拟合，这是值得注意的问题。</em> </li><li><em>尽管我把 ASPP 写的很省，但尝试后发现如果那个结构不加 ASPP 的话性能会很差。</em></li><li><em>关于深度，尝试的结果似乎说明了 Encoder 部分需要足够的深（至少 8 个 res block 是不够的），而 Decoder 则不需要太复杂（没有足够的证据，不过增加 2 层能带来的好处不大）</em></li></ul></blockquote><h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p>训练方面，UNet（实时） 和 类 DeepLab V3+ 方法因为是从头搭起，所以就像上面说的一样，需要两次 fine-tuning，其余方法并没有经过 COCO 人像预训练。优化方法我用的是 SGD+Momentum，事实上这是因为用其他的一些优化方法会导致“零核现象”的发生，我在以前的一篇文章中分析过这点，不知道这个现象和性能的下降有多大关系，但如果用 SGD 的话就不会有这种事情发生，而且性能会更好。</p><blockquote><ul><li><em>COCO 人像部分的预训练的加入很有效，但是必须使用和应用场景十分相似的部分作为预训练才有效，不筛选的话很可能没有效果上的影响。</em>  </li><li><em>使用大 Momentum（我用的 0.99）似乎不错，训练速度会很快而且效果也不会差（实验尝试似乎比 0.9 还要好）。</em></li><li><em>实际训练时还发现有挺严重的过拟合，所以做了些数据集扩增，结果挺有效的。</em>  </li><li><em>在 output stride 为 8 时增加一个辅助损失也是有效的。</em></li></ul></blockquote><h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>在 [1] 中给出的数据集中测试结果如下（其中我加入了 Std 度量用于观察分割的稳定性，意为 IoU 的标准差）</p><div class="table-container"><table><thead><tr><th style="text-align:center">Method</th><th style="text-align:center">mIoU</th><th style="text-align:center">Std</th></tr></thead><tbody><tr><td style="text-align:center">ENet</td><td style="text-align:center">94.04%</td><td style="text-align:center">6.25%</td></tr><tr><td style="text-align:center">FCN</td><td style="text-align:center">95.73%</td><td style="text-align:center">3.10%</td></tr><tr><td style="text-align:center">FCN + dilated</td><td style="text-align:center">96.04%</td><td style="text-align:center">3.27%</td></tr><tr><td style="text-align:center">UNet（实时）</td><td style="text-align:center">95.32%</td><td style="text-align:center">4.03%</td></tr><tr><td style="text-align:center">类 DeepLab V3+</td><td style="text-align:center">96.4%</td><td style="text-align:center">3.25%</td></tr><tr><td style="text-align:center">PortraitFCN+[1]</td><td style="text-align:center">95.91%</td><td style="text-align:center">-</td></tr></tbody></table></div><p>另外我还自己标了个五十多张明暗、运动、背景复杂度变化都比较大的测试图片，在此数据集上测试结果为</p><div class="table-container"><table><thead><tr><th style="text-align:center">Method</th><th style="text-align:center">mIoU</th><th style="text-align:center">Std</th></tr></thead><tbody><tr><td style="text-align:center">ENet</td><td style="text-align:center">61.42%</td><td style="text-align:center">20.04%</td></tr><tr><td style="text-align:center">FCN</td><td style="text-align:center">87.71%</td><td style="text-align:center">12.01%</td></tr><tr><td style="text-align:center">FCN + dilated</td><td style="text-align:center">89.43%</td><td style="text-align:center">10.62%</td></tr><tr><td style="text-align:center">UNet（实时）</td><td style="text-align:center">91.96%</td><td style="text-align:center">3.95%</td></tr><tr><td style="text-align:center">类 DeepLab V3+</td><td style="text-align:center">93.7%</td><td style="text-align:center">2.3%</td></tr></tbody></table></div><p>可以看到类 DeepLab V3+ 方法测试结果还是挺不错的，其余的多个私有测试集上表现也不错，它在 MIX2 上前向一张图片大概需要 120ms。除此之外，达到实时性能的 UNet 改进版也不错。</p><h2 id="最终的效果"><a href="#最终的效果" class="headerlink" title="最终的效果"></a>最终的效果</h2><div align="center"><img src="/2019/04/19/protrait-segmentation/full.png" width="70%">  </div><p>可以看到边缘的跟踪还是不错的，除此之外，头发的细节处理也可以在顶部图中看到。  </p><p>因为 output stride 为 2 导致分割边缘在放大后加大了间隔，看上去和实际边缘有些距离。在下面的图中可以明显看到这种在人和物件之间的边界、甚至透明物件覆盖影响下算法的处理情况。</p><div align="center"><img src="/2019/04/19/protrait-segmentation/pony.png" width="70%">  </div><p>虽然训练集全都是单人肖像，但多人的情况也能够分割，具体效果还是要看人物所占的尺度等。  </p><div align="center"><img src="/2019/04/19/protrait-segmentation/multi.jpg" width="70%">  </div><p>[参考文献]:<br>[1] <a href="http://xiaoyongshen.me/webpage_portrait/papers/portrait_eg16.pdf" target="_blank" rel="noopener">《Automatic Portrait Segmentation for Image Stylization》</a><br>[2] <a href="https://arxiv.org/pdf/1704.08812.pdf" target="_blank" rel="noopener">《Automatic Real-time Background Cut for Portrait Videos》</a><br>[3] <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Caelles_One-Shot_Video_Object_CVPR_2017_paper.pdf" target="_blank" rel="noopener">《One-Shot Video Object Segmentation》</a><br>[4] <a href="https://arxiv.org/pdf/1606.02147.pdf" target="_blank" rel="noopener">《ENet: A Deep Neural Network Architecture forReal-Time Semantic Segmentation》</a><br>[5] <a href="https://arxiv.org/pdf/1411.4038.pdf" target="_blank" rel="noopener">《Fully Convolutional Networks for Semantic Segmentation》</a><br>[6] <a href="https://arxiv.org/pdf/1702.08502.pdf" target="_blank" rel="noopener">《Understanding Convolution for Semantic Segmentation》</a><br>[7] <a href="https://arxiv.org/pdf/1505.04597.pdf" target="_blank" rel="noopener">《U-Net: Convolutional Networks for BiomedicalImage Segmentation》</a><br>[8] <a href="https://arxiv.org/pdf/1802.02611.pdf" target="_blank" rel="noopener">《Encoder-Decoder with Atrous SeparableConvolution for Semantic Image Segmentation》</a><br>[9] <a href="https://arxiv.org/pdf/1707.01083.pdf" target="_blank" rel="noopener">《ShuffleNet: An Extremely Efficient Convolutional Neural Network for MobileDevices》</a>  </p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;div align=&quot;center&quot;&gt;
+&lt;img src=&quot;/2019/04/19/protrait-segmentation/Einstein.png&quot; width=&quot;70%&quot;&gt;  
+&lt;/div&gt;
+
+&lt;p&gt;这部分是关于在低计算量下完成人像分割的工作，因为时间充裕，所以调查尝试得比较多，最终完成的效果还不错。&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="技术经验" scheme="https://lamply.github.io/tags/%E6%8A%80%E6%9C%AF%E7%BB%8F%E9%AA%8C/"/>
+    
+      <category term="语义分割" scheme="https://lamply.github.io/tags/%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2/"/>
+    
+  </entry>
   
   <entry>
     <title>关于 LRA 和 Force Regularization 的探索</title>
@@ -236,6 +262,29 @@
     
     
       <category term="观测" scheme="https://lamply.github.io/tags/%E8%A7%82%E6%B5%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kaggle &quot;Amazon from Space&quot; 经验分享</title>
+    <link href="https://lamply.github.io/2017/10/17/Kaggle/"/>
+    <id>https://lamply.github.io/2017/10/17/Kaggle/</id>
+    <published>2017-10-17T05:13:06.000Z</published>
+    <updated>2019-04-18T10:18:06.694Z</updated>
+    
+    <content type="html"><![CDATA[<p>看了 Kaggle 亚马逊雨林卫星图分类比赛第一名 <a href="http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-interview/" target="_blank" rel="noopener">Planet: Understanding the Amazon from Space, 1st Place Winner’s Interview</a>, 学到了些 trick, 这里记录一下  </p><ol><li><p>关于 precision 和 recall 的权衡, 可以在原有的 log loss 上增加 $F_\beta$-score loss 来达到, 如:</p><script type="math/tex; mode=display">F_1 = 2\cdot\frac{precision\cdot recall}{precision+recall}</script><p>而</p><script type="math/tex; mode=display">F_\beta = (1+\beta^2)\cdot\frac{precision\cdot recall}{(\beta^2\cdot precision)+recall}</script><p>使用 $F<em>2$-score 时, 代表 recall 比 precision 重要, $F</em>{0.5}$-score, 代表 precision 比 recall 重要  </p></li><li><p>关于分类标签变量存在相关或部分对立的情况下的预测, 可以对最后一层输出的概率使用 ridge regression ( 岭回归, 即加了 L2 正则项的最小二乘, 鼓励回归参数尽可能利用到所有的相关变量, 惩罚可能存在的个别变量 dominant 的大正负值参数 cancel 得出结果的情况 ). 该方法也可以用在 ensemble 多个模型上, 最终对输出结果做 ridge regression</p></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;看了 Kaggle 亚马逊雨林卫星图分类比赛第一名 &lt;a href=&quot;http://blog.kaggle.com/2017/10/17/planet-understanding-the-amazon-from-space-1st-place-winners-intervi
+      
+    
+    </summary>
+    
+    
+      <category term="技术经验" scheme="https://lamply.github.io/tags/%E6%8A%80%E6%9C%AF%E7%BB%8F%E9%AA%8C/"/>
     
   </entry>
   
