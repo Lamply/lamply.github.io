@@ -4,9 +4,8 @@ date: 2018-07-15 12:11:12
 tags: [技术经验,人脸对齐]
 ---
 <div align=center>
-![1](face-alignment/1.png)  
+<img src="face-alignment/1.png">  
 </div>
-尽管是在复习备战阶段，不过还是要时常回顾一下之前工作的经验，不能太过生疏。  
 这里是关于应用传统方法做人脸对齐的经验总结，是在去年5月到7月的工作，也是我入职后的第一个正式项目，用的是 SDM (Supervised Descent Method) [1] 的方法，具体细节可能不太记得，所以会慢慢补完。  
 <!--more-->
 ### 引言
@@ -23,7 +22,7 @@ tags: [技术经验,人脸对齐]
 
 扯远了，总之当时的瞎蒙乱撞最终幸运的还是找到了几个有用的改进方法。类似《Extended Supervised Descent Method for Robust Face Alignment》[3] 里提到的，一个是关于特征提取范围以及cell数量的改进，改成了顺应 SDM 迭代过程从大到小的范围、从粗到细的计算；第二个就是分开全局和局部来进行回归。这一些改进其实算是人脸对齐中比较常见的改进了，没有太多新意，不过对于全局和局部区分回归来说，比起对最终效果的改进，这个方法对模型大小和运算速度的改进更为明显。最后为了工程上的应用，这些方法都需要大量调参。  
 
-完成上面的这些其实也提升不了太多，关于这个项目最终提升最大的还是加入了人脸检测时得到的 5 个点做先验。也就是把 5 点扩展到 68 点，再加点 trick 使这 68 点极其接近 ground truth，最后作为 init shape 输入到 SDM。这个方法让人脸对齐准确率和成功率大大增加，因为先验降低了回归的难度，把瓶颈推到了人脸检测时的五点回归成功率。虽然某些特殊情况可能会因为先验产生一些误导，不过也让通常情况下的对齐准确度达到非常高的地步，这是值得的。（后来我记得找到了一篇2017年7月的论文也有提到用类似我这个方法的改进版 SDM 和 LBF 来和他的深度学习方法对比的论文，只不过他用的是JDA，我用的是MTCNN，还有就是生成的 init shape 方法略有不同。）  
+完成上面的这些其实也提升不了太多，关于这个项目最终提升最大的还是加入了人脸检测时得到的 5 个点做先验。也就是把 5 点扩展到 68 点，再加点 tricks 使这 68 点极其接近 ground truth，最后作为 init shape 输入到 SDM。这个方法让人脸对齐准确率和成功率大大增加，因为先验降低了回归的难度，把瓶颈推到了人脸检测时的五点回归成功率。虽然某些特殊情况可能会因为先验产生一些误导，不过也让通常情况下的对齐准确度达到非常高的地步，这是值得的。（后来我记得找到了一篇2017年7月的论文也有提到用类似我这个方法的改进版 SDM 和 LBF 来和他的深度学习方法对比的论文，只不过他用的是 JDA，我用的是 MTCNN，还有就是生成的 init shape 方法略有不同。）  
 
 ### 最终效果
 至此，我的 SDM 人脸对齐的效果已经和当时竞品水平相当了，最终在 300w 上测试的结果为（用的 inter-pupil normalization error）  
@@ -32,7 +31,7 @@ tags: [技术经验,人脸对齐]
 |:----:|:----:|:----:|
 |4.75|4.09|7.47|  
 
-当然了，因为这个测试数字是用了五点 ground truth 做抖动的前提下得到的，所以没严格的参考价值，无法和其他公开方法做比较，不过也能反映这种方法的有效性。   
+当然了，因为这个测试数字是用了五点 ground truth 做抖动的前提下得到的，所以没严格的参考价值，无法和其他公开方法做比较，不过也能反映这种方法的有效性，因为除了一些较为困难的情况，大多数时候通过 MTCNN 得到的五点都不会有太大偏差。   
 
 最终做了三个模型，分别是有五点先验的 68 点、106 点，以及没有五点先验的 106 点。模型大小都是 5MB 左右， 在小米 mix2 上速度 20ms 左右。demo 效果大致如下：
 
@@ -49,8 +48,9 @@ tags: [技术经验,人脸对齐]
 [参考文献]:  
 [1] [《Supervised Descent Method and its Applications to Face Alignment》](https://www.cv-foundation.org/openaccess/content_cvpr_2013/papers/Xiong_Supervised_Descent_Method_2013_CVPR_paper.pdf)  
 [2] github: [patrikhuber/superviseddescent
-](https://github.com/patrikhuber/superviseddescent)  
+](https://github.com/patrikhuber/superviseddescent)   
 [3] [《Extended Supervised Descent Method for Robust Face Alignment》](http://pdfs.semanticscholar.org/5c82/0e47981d21c9dddde8d2f8020146e600368f.pdf)
+
 
 
 

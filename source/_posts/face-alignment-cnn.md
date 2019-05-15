@@ -4,7 +4,7 @@ date: 2018-07-19 12:40:30
 tags: [技术经验,人脸对齐]
 ---
 <figure align=center>
-![1](face-alignment-cnn/1.png)  
+<img src="face-alignment-cnn/1.png">
 </figure>
 
 这部分是去年 9 月份开始的工作，算是第一次真正踏入深度学习的领域。具体工作也还算简单，就是复现一篇深度学习方法做的人脸对齐，当练练手。
