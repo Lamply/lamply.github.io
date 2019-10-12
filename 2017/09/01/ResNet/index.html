@@ -1,0 +1,145 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> ResNet · In un'altra vita</title><meta name="description" content="ResNet - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="In un'altra vita"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ResNet</h1><div class="tags"><a href="/tags/论文简译/" class="tag-title">#论文简译</a></div><div class="post-info">Sep 1, 2017</div><div class="post-content"><p>这里是 ResNet 的论文，作为被广泛应用的骨干网络，它提出的几个概念可以说是<strong>着实可靠</strong>地拓宽了网络设计的思路，对于广大摸着石头过河的工程师和研究者来说就是指出了一条明路。网络本身也高效、简洁且实用，可以作为 VGG 的上位替代。<br><a id="more"></a></p>
+<h2 id="Deep-Residual-Learning-for-Image-Recognition"><a href="#Deep-Residual-Learning-for-Image-Recognition" class="headerlink" title="Deep Residual Learning for Image Recognition"></a>Deep Residual Learning for Image Recognition</h2><hr>
+<h4 id="原文理解"><a href="#原文理解" class="headerlink" title="原文理解"></a>原文理解</h4><h5 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h5><p>网络深度对很多视觉任务都有很强的重要性, 但是仅靠简单的层堆积会存在梯度消失/爆炸问题. 虽然使用一些归一化初始技巧和中间归一化层可以很大程度解决这些问题, 但随着深度继续增加, 网络的精准度会逐渐饱和, 接着就会快速劣化, 这就是 <em>degradation problem</em>. 出乎意料的是, 这些问题不是因为过拟合导致的, 实验证明增加更多的层数会导致更高的 <em>训练误差</em>.<br>本文, 作者通过引入一个深度残差学习框架解决了这个 degradation problem. 与其让每几个堆叠的层直接学习潜在的映射, 我们显式地让这些层去学习残差映射. 正式来讲, 即输出 H(x), 输入 x, 让非线性层学习 F(x):=H(x)-x, 那么原本的映射就变成了 F(x)+x. 这在前向网络中会被视为捷径 ( “<em>shortcut connections</em>“ ), 允许网络跳级连接, 在本文中可以简单看成 <em>恒等映射 ( “identity<br>mapping” )</em>.<br>经过实验发现, 深度残差网很容易训练, 且很容易让精度随网络深度的增加而增加.  </p>
+<h5 id="残差学习"><a href="#残差学习" class="headerlink" title="残差学习"></a>残差学习</h5><p>假设多次非线性函数能够渐进逼近复杂函数, 那么在维度不变的情况下该假设与渐进逼近残差是一样的.<br>之所以改为学习残差, 是因为 degradation problem 这个反常的现象. 在残差学习的恒等映射情况下, 一个更深的模型的训练误差是应该不超过比它浅的模型的. degradation problem 告诉我们 solver 使用多次非线性函数在渐进逼近恒等映射时可能存在困难, 而残差学习则提供了将权重趋向 0 来达到恒等映射的拟合.<br>当然, 在现实中, 恒等映射不太可能是最优的. 但这个改动可能有助于先决这个问题. 如果最优函数接近于恒等映射而非零映射, 那么 solver 应该很容易学习扰动来得到最优函数. 通过实验发现, 通常残差函数只有很小的响应, 这表明恒等映射的可以提供合理的先决条件.</p>
+<h5 id="shortcut-恒等映射"><a href="#shortcut-恒等映射" class="headerlink" title="shortcut 恒等映射"></a>shortcut 恒等映射</h5><p>本文采用每叠一些层就使用残差学习, 也就是建立一个 block:</p>
+<script type="math/tex; mode=display">y=F(x,W)+x</script><p>其中:</p>
+<script type="math/tex; mode=display">F = W_2\sigma(W_1x)</script><p>σ 为 ReLU, 省略了 bias. 在得到 y 后再做一次 ReLU.<br>如果需要变化维度, 则:</p>
+<script type="math/tex; mode=display">y=F(x,W)+W_sx</script><p>W_s 为投影矩阵, 用来改变维度, 当然它也可以是个方阵用作线性变换, 但后续实验证明恒等变换就足够解决 degradation problem 了.<br>F 是可以灵活改变的, 可以含有多层, 或者不同类型的层, 比如卷积层. 但如果 F 仅含有一层映射的话, 那还没有得到有效的效果验证.</p>
+<h5 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h5><p>为了对比, 作者构建了两个相同计算量的网络, 两种网络均为类似 VGG 的网络. 开始 7x7 stride 2, 然后 3x3, 每降低一次 feature map, double 一次 filters 数量, 使用 stride 2 卷积来降低 feature map, 堆叠 34 层和类似的 18 层. 最后做全局平均池化, 然后接 1000 分类器, 卷积后面都采用了 batch normalization 保证训练不失败.<br>不同的是 ResNet 版加入了跳级连接, 降低 feature map 提升维度处分成两种策略, 一种填充 0 来扩增维度, 另一种上述提到的 1x1 升维, 两种方法都 stride 2 降低空间大小.<br>实验得知, VGG 34 层表现比 18 层要差. 而且经过更多 iter 的训练发现问题没有解决.<br>对于 ResNet 版, 采取第一种策略的, 34 层比 18 层错误率要少 2.8%, 更重要的, 34 层表现出明显更低的训练误差, 并且能很好泛化验证数据.<br>对比两种网络的 18 层版, 发现 ResNet 能在训练早期更快的收敛.  </p>
+<p>ImageNet 上 10-crop top-1 error 实验结果如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">plain</th>
+<th style="text-align:center">ResNet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">18 layers</td>
+<td style="text-align:center">27.94</td>
+<td style="text-align:center">27.88</td>
+</tr>
+<tr>
+<td style="text-align:center">34 layers</td>
+<td style="text-align:center">28.54</td>
+<td style="text-align:center">25.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>(PS: <em>看上去似乎浅层下 ResNet 影响不大</em>)</p>
+<h5 id="恒等和投影-shortcuts"><a href="#恒等和投影-shortcuts" class="headerlink" title="恒等和投影 shortcuts"></a>恒等和投影 shortcuts</h5><p>对比 ResNet 不同策略, 分为三种对比: </p>
+<ol>
+<li>零填充升维, 所有 shortcuts 都没有参数</li>
+<li>升维时使用 1x1 卷积升维, 其他恒等</li>
+<li>所有 shortcuts 都带有 1x1 卷积<br>实验表明, 2 稍微比 1 好些 <code>(top-1 25.03-&gt;24.52)</code>, 作者认为这是因为 1 在升维时的零填充部分实际并没有进行残差学习; 3 轻微比 2 好些 <code>(top-1 24.52-&gt;24.19)</code>, 作者认为这是因为 3 在 shortcuts 处引入了额外参数.  微小的差异表明投影 shortcuts 对与解决 degradation problem 不重要. </li>
+</ol>
+<h5 id="更深的瓶颈结构"><a href="#更深的瓶颈结构" class="headerlink" title="更深的瓶颈结构"></a>更深的瓶颈结构</h5><p>为了节省训练时间, 作者把上面的 block 修改为 瓶颈 ( <em>bottleneck</em> )  设计. 即在每个 $F$ 内堆叠三层, 分别为 1x1, 3x3, 1x1 卷积层. 其中 1x1 用于升降维度, 使 3x3 作为有更低输入输出维度的瓶颈.  </p>
+<p><div align="center">
+<img src="/2017/09/01/ResNet/block.png">  
+</div><br>对于瓶颈结构来说, shortcuts 策略的选择对模型大小和时间复杂度都有很重要的影响, 无参数恒等 shortcuts 可以让瓶颈模型更高效. (<em><code>?</code></em>)<br>作者在 50/101/152 层模型中使用了瓶颈结构和策略2的升降维.其各个配置如下:   </p>
+<p><div align="center">
+<img src="/2017/09/01/ResNet/Configuration.png">  
+</div><br>(PS: <em>值得注意的是 ResNet 50 层瓶颈版的 FLOPs 与 34 层相差不大, 网络的堆叠配置是一样的</em>)</p>
+<p>在 ImageNet 验证集上的 10-crop 实验结果如下:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">method</th>
+<th style="text-align:center">top-1 err.</th>
+<th style="text-align:center">top-5 err.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">plain-34</td>
+<td style="text-align:center">28.54</td>
+<td style="text-align:center">10.02</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-34 1</td>
+<td style="text-align:center">25.03</td>
+<td style="text-align:center">7.76</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-34 2</td>
+<td style="text-align:center">24.52</td>
+<td style="text-align:center">7.46</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-34 3</td>
+<td style="text-align:center">24.19</td>
+<td style="text-align:center">7.40</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-50</td>
+<td style="text-align:center">22.85</td>
+<td style="text-align:center">6.71</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-101</td>
+<td style="text-align:center">21.75</td>
+<td style="text-align:center">6.05</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-152</td>
+<td style="text-align:center">21.43</td>
+<td style="text-align:center">5.71</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在 ImageNet 验证集上单模型实验结果如下: </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">method</th>
+<th style="text-align:center">top-1 err.</th>
+<th style="text-align:center">top-5 err.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ResNet-34 2</td>
+<td style="text-align:center">21.84</td>
+<td style="text-align:center">5.71</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-34 3</td>
+<td style="text-align:center">21.53</td>
+<td style="text-align:center">5.60</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-50</td>
+<td style="text-align:center">20.74</td>
+<td style="text-align:center">5.25</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-101</td>
+<td style="text-align:center">19.87</td>
+<td style="text-align:center">4.60</td>
+</tr>
+<tr>
+<td style="text-align:center">ResNet-152</td>
+<td style="text-align:center">19.38</td>
+<td style="text-align:center">4.49</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>最终在 ILSVRC 2015 提交中使用了两个 152 层模型的 ensembles, 得到 top-5 error 3.57.</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2017/10/17/Kaggle/" class="prev">PREV</a><a href="/2017/09/01/GoogLeNet/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2017/09/01/ResNet/';
+var disqus_title = 'ResNet';
+var disqus_url = 'https://lamply.github.io/2017/09/01/ResNet/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2019 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

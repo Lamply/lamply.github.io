@@ -1,0 +1,65 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> DeepLab系列论文简略记录 · In un'altra vita</title><meta name="description" content="DeepLab系列论文简略记录 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="In un'altra vita"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">DeepLab系列论文简略记录</h1><div class="tags"><a href="/tags/论文笔记/" class="tag-title">#论文笔记</a></div><div class="post-info">Mar 1, 2018</div><div class="post-content"><p>这部分是关于语义分割网络 DeepLab 系列的三篇论文。尽管经验性的技巧很多，但就效果而言还是很不错的，有不少值得参考的地方。<br><a id="more"></a><br><br></p>
+<h3 id="DeepLab-Semantic-Image-Segmentation-with-Deep-Convolutional-Nets-Atrous-Convolution-and-Fully-Connected-CRFs"><a href="#DeepLab-Semantic-Image-Segmentation-with-Deep-Convolutional-Nets-Atrous-Convolution-and-Fully-Connected-CRFs" class="headerlink" title="DeepLab: Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected CRFs"></a>DeepLab: Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected CRFs</h3><hr>
+<h4 id="原文理解"><a href="#原文理解" class="headerlink" title="原文理解"></a>原文理解</h4><p>三个贡献:  </p>
+<ol>
+<li>明确表明了上采样滤波器或者叫 ‘空洞卷积’ 是 dense prediction 任务中的重要工具. 空洞卷积允许明确控制滤波器在计算特征响应后的分辨率, 也允许有效放大滤波器的感受野, 从而无计算量和参数量增加地聚合更大的上下文信息</li>
+<li>提出了空间金字塔空洞池化 ( ASPP ), 能在多尺度上分割物体</li>
+<li>结合 DCNN 和概率图模型提升边缘准确度</li>
+</ol>
+<h4 id="方法简述"><a href="#方法简述" class="headerlink" title="方法简述"></a>方法简述</h4><p>将后面一层 pooling 和 conv stride 改为 1, 换成 atrous conv, 最后并行多个不同 rate 的 atrous conv, 然后 fuse 在一起. 加上多尺度输入, COCO 预训练, randomly rescaling 扩增, CRF, 最终得出结果.</p>
+<p><br><br><br></p>
+<h3 id="Rethinking-Atrous-Convolution-for-Semantic-Image-Segmentation"><a href="#Rethinking-Atrous-Convolution-for-Semantic-Image-Segmentation" class="headerlink" title="Rethinking Atrous Convolution for Semantic Image Segmentation"></a>Rethinking Atrous Convolution for Semantic Image Segmentation</h3><hr>
+<h4 id="原文理解-1"><a href="#原文理解-1" class="headerlink" title="原文理解"></a>原文理解</h4><p>针对多尺度分割, 设计了级联或并联的 atrous conv 模块, 改进了 ASPP, 没有 CRF 后处理也达到了 SOTA  </p>
+<ul>
+<li>Multi-grid Method<ul>
+<li>一个 block 内几个卷积, 分不同的 dilation rate, 比如三个卷积则原来 { 1,1,1 } 可以变为 { 1,2,4 }, 然后乘上该 block 的 dilation rate. 也就是说本来要 stride 2 的, 改用 atrous conv 后, 后面 block 卷积的 dilation rate 为 2 x { 1,2,4 } = { 2,4,8 }</li>
+<li>但是 ResNet 的 block 难道不是只有一个 3x3 ??? 1x1 哪来的 dilation ???? 原文没有提及, github 有相关讨论, 大致可能一是 google 所用 ResNet Block 加了三个 3x3 卷积, 二是指多个 bottleneck 内的 3x3 卷积做 multi-grid</li>
+</ul>
+</li>
+<li>ASPP<ul>
+<li>加上 batch normalization</li>
+<li>dilation rate 过大会导致 valid 的 weights 减少 ( 非 pad 0 区域与 filters 区域相交减小 ), 这会导致大 dilation rate 的 filters 退化, 为解决这个问题, 且整合 global context, 使用了 image-level 的 feature. 特别的, 在模型最后的 feature map 采用 global average pooling, 然后送进 256 个 1x1 卷积 BN 中, 然后双线性插值到需要的维度.</li>
+<li>最终 ASPP 有: 一个 1x1, 三个 3x3 dilation rate { 6,12,18 } ( 缩小 16 倍时 ), 以及 image-level feature, 最终 concat 在一起做 1x1 卷积. 其中卷积都是 256 output channel 和 BN.</li>
+</ul>
+</li>
+</ul>
+<p><strong><em>原文提及主要性能提升来自于 Batch Normalization 的引入及 COCO 预训练. 实际本人尝试在小数据集上从 16s 到 8s 冻结 Batch Normalization 做 finetune, 最终效果并没有提升, 可能真的要在大量数据下才能得到较好的 Batch Normalization 参数做初始化吧</em></strong>  </p>
+<p><br><br><br></p>
+<h3 id="Encoder-Decoder-with-Atrous-Separable-Convolution-for-Semantic-Image-Segmentation"><a href="#Encoder-Decoder-with-Atrous-Separable-Convolution-for-Semantic-Image-Segmentation" class="headerlink" title="Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation"></a>Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation</h3><hr>
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>融合了 Encoder-Decoder 和 SPP, 加上 depthwise 卷积的大量使用</p>
+<h4 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h4><ol>
+<li>Atrous Convolution 的 Encoder-Decoder  <ul>
+<li>Encoder 阶段改进 Xception + DeepLabv3, 主要改进点为 <em>atrous separable convolution</em>, 其实就是都大量使用 depthwise 卷积替换 ASPP 等卷积结构, 可以显著的降低计算复杂度并保持相似或更好的性能  </li>
+<li>Decoder 阶段在 DeepLabv3 输出端上采样 ( output_stride = 16 下 4 倍 ), 然后 concat 一个经过 1x1 降维后的网络低层特征, 再做 3x3 卷积, 然后上采样到原图大小. 这里也可以采用 depthwise 卷积提升效率.</li>
+</ul>
+</li>
+<li>修改 Xception  <ul>
+<li>除输入流外加入了更多的层数  </li>
+<li>去掉 max-pooling, 以 stride depthwise 卷积替代  </li>
+<li>所有 3x3 depthwise 后加 batchnorm 和 ReLU <strong><em>( 这个 ReLU 效果存疑 )</em></strong></li>
+</ul>
+</li>
+</ol>
+<h4 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h4><ol>
+<li>关于 Decoder 的设计实验  <ul>
+<li>这部分作者实验发现 Decoder 引入 before striding 的同分辨率 feature map 然后做 1x1 卷积压缩到 48 channel 再进行 concat 效果最好, 不过 mIoU 差距都比较小, 而且 64 channel 效果更差可以看出该选择可能与 Encoder 输出通道比例有关联, 玄学成分多些  </li>
+<li>还有就是 concat 后两个 3x3 256 卷积性能最好, 而且只做一个 skip-connection 会更高效</li>
+</ul>
+</li>
+<li>关于 Network Backbone<ul>
+<li>这里比较重要的一点就是 Decoder 的加入会带来 1%~2% 的性能提升, 这点在训练和测试相同 output stride 的情况下会比较明显, 不同的情况下比较不明显. <strong><em>( 这里总体计算量会增加几十 B, 个人认为在轻量级网络下不划算, 还是希望能有不会明显增加计算量的 decoder ) </em></strong></li>
+<li>另外, 作者使用 Xception 实验时发现 multi-grid 不会提升性能, 于是没有使用……………..</li>
+<li>关于 pretrain, 在 COCO 上 pretrain 会带来大约 2% 的提升, 在 JFT 上 pretrain backbone 会再额外带来大约 1% 的提升</li>
+</ul>
+</li>
+</ol>
+<h4 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h4><p>DeepLabv3+ 采用 Encoder-Decoder 结构, 将 DeepLabv3 作为 Encoder, 并引入简单高效的 skip-connection 来恢复边缘. 还有就是改进 Xception 以及采用 atrous separable convolution 降低计算量. 总的来说没什么新鲜的, 都是整合之前的方法然后通过大量实验找到的最优最高效的结构, 或许这就是炼金术吧……</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/03/01/ShuffleNet/" class="prev">PREV</a><a href="/2017/11/15/Low_Rank/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/03/01/DeepLab/';
+var disqus_title = 'DeepLab系列论文简略记录';
+var disqus_url = 'https://lamply.github.io/2018/03/01/DeepLab/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2019 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

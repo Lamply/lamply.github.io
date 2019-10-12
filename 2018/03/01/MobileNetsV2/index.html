@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> MobileNet V2 · In un'altra vita</title><meta name="description" content="MobileNet V2 - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="In un'altra vita"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">MobileNet V2</h1><div class="tags"><a href="/tags/论文笔记/" class="tag-title">#论文笔记</a></div><div class="post-info">Mar 1, 2018</div><div class="post-content"><p>这是关于轻量级网络 MobileNet 的改进版论文，作为万众瞩目的高效率骨干网络架构，它的更新意味着移动端网络的又一次改进。<br>原文链接： <a href="https://arxiv.org/pdf/1801.04381.pdf" target="_blank" rel="noopener">Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</a><br><a id="more"></a></p>
+<h3 id="Main-Contribution"><a href="#Main-Contribution" class="headerlink" title="Main Contribution"></a>Main Contribution</h3><p>inverted residual with linear bottleneck. 输入低维压缩表征, 扩增到高维并进行 depthwise 卷积, 再通过线性卷积投射回低维表征.<br>该卷积结构因为不需要完全实现大的中间 feature map, 还能显著降低内存占用  </p>
+<h3 id="Pre-Knowledge"><a href="#Pre-Knowledge" class="headerlink" title="Pre-Knowledge"></a>Pre-Knowledge</h3><ol>
+<li><p>Depthwise Separable Convolutions<br>广泛应用的标准卷积替代品. 将标准卷积分解为两部分, 第一部分为 <em>depthwise convolution</em>, 即每一个输入通道使用对应的一个卷积核来滤波, 第二部分为 <em>pointwise convolution</em>, 即使用 1x1 卷积将上层特征线性组合得出新的特征.<br>\(d_o\) 个 \(k \cdot k\) 标准卷积花费 \(h_i\cdot w_i\cdot d_i\cdot d_o\cdot k^2\), 而相对应的 depthwise 分离卷积花费 \(h_i\cdot w_i\cdot d_i\cdot k^2 + h_i\cdot w_i\cdot d_i\cdot d_o\), 相当于减少了近 \(k^2\) 倍的计算量 ( 实际是乘了 \(\frac{1}{d_o}+\frac{1}{k^2}\) 倍 )</p>
+</li>
+<li><p>Linear Bottlenecks<br>这里讨论激活层的基本属性, 文中将激活层的 feature map 看作维度 \(h_i\times w_i\times d_i\) 的激活张量.<br>正式来说, 对于 \(L_i\) 层, 输入一组图像, 其激活组成了一个 “ manifold of interest “ ( 感兴趣流形? )<br>这里提出了关于 manifold of interest 的一些假设, 并通过实验证明在 bottleneck 中使用非线性会损坏信息, 给出了通过在卷积 block 内插入 linear bottleneck 可以达到 capture 低维 manifold of interest 的目的  </p>
+</li>
+<li><p>Inverted residuals<br>受 bottlenecks 实际上包含所有必要信息的直觉启发, 文中直接将 bottlenecks 间作为 shortcuts<br>最终该设计网络的层可以去除而不需要重新训练, 只减少一点点准确率</p>
+</li>
+<li><p>信息流的解释<br>文中阐述了该结构能将 building blocks 的输入和输出域很自然的分割开来, 作为网络每层的容量, 以及输入输出间的非线性函数作为表达力 ?  </p>
+</li>
+</ol>
+<h3 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h3><p>Bottleneck &amp; Network:  </p>
+<p><div align="center">
+<img src="/2018/03/01/MobileNetsV2/bottleneck.png">
+<img src="/2018/03/01/MobileNetsV2/block.png">
+<img src="/2018/03/01/MobileNetsV2/network.png">
+</div><br>在作者实验中, t 在 5~10 之间得出的结果大部分差不多, 只是在小网络中小的 t 值会稍微好一点, 大的网络中大的 t 值会稍微好一点<br>在整体网络结构中, 第一个 bottleneck t 值为 1 会比较好, 另外在小的网络宽度下, 保留最后几层卷积层的卷积核数会提高小网络的性能  </p>
+<h3 id="Implementation-Notes"><a href="#Implementation-Notes" class="headerlink" title="Implementation Notes"></a>Implementation Notes</h3><p>这部分主要是关于推理时内存占用的优化问题, 大致来讲, 传统的结构的内存占用由并行结构主导 ( 即残差连接之类的 ), 而这类结构需要内存为通过计算的输入和输出 tensor 的总和<br>而文中提出的 building block 的内部操作均为 per-channel 的, 且随后的非 per-channel 操作具有很大的输入输出 size 比率 ( 即 bottleneck 的输入 channel 显著大于输出时的 channel ). 这样在内部操作中需要的内存占用仅仅为一个 channel 的 size, 而输出残差连接也因为 Invert Residual 减少了 channel 从而减少内存占用  </p>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>比较关心分割方面的, 所以这里只记录关于分割的实验<br>实验在 PASCAL VOC 2012 上进行, 主要是比较各种 feature extractors 下的 DeepLab V3, 以及简化 DeepLab V3 的方法, 推理时采取不同的策略来提升性能. 结论如下  </p>
+<ol>
+<li>推理策略加入 multi-scale 和 left-right flipped 会显著地增加计算量, 所以在终端设备应用上不考虑</li>
+<li>output_stride 为 16 比 8 更高效</li>
+<li>在倒数第二层基础上做 DeepLab V3 会更高效, 因为 channel 小, 而且得到的性能相似</li>
+<li>去掉 ASPP 会减小很多计算量而且只损失一点性能 <strong><em>( ASPP 没有进行 depth-wise 改进, 参见 DeepLab V3, 所以该结论在优化后的 ASPP 上实际效果存疑 )</em></strong></li>
+</ol>
+<h3 id="Ablation-study"><a href="#Ablation-study" class="headerlink" title="Ablation study"></a>Ablation study</h3><p>两个方面</p>
+<ol>
+<li>Invert residual connections 的有效性</li>
+<li>违反常理的 linear bottleneck 能提升性能, 给 non-linearity 操作在 bottleneck 低维空间内损失信息的假设提供了支持</li>
+</ol>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/04/19/zero-kernels/" class="prev">PREV</a><a href="/2018/03/01/ShuffleNet/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2018/03/01/MobileNetsV2/';
+var disqus_title = 'MobileNet V2';
+var disqus_url = 'https://lamply.github.io/2018/03/01/MobileNetsV2/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//https-lamply-github-io.disqus.com/count.js" async></script><div class="copyright"><p>© 2015 - 2019 <a href="https://lamply.github.io">Lamply</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

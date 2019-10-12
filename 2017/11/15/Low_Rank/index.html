@@ -1,5 +1,5 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Coordinating Filters for Faster Deep Neural Networks · In un'altra vita</title><meta name="description" content="Coordinating Filters for Faster Deep Neural Networks - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="In un'altra vita"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Coordinating Filters for Faster Deep Neural Networks</h1><div class="tags"><a href="/tags/论文笔记/" class="tag-title">#论文笔记</a></div><div class="post-info">Aug 7, 2018</div><div class="post-content"><div align="center">
-<img src="/2018/08/07/Low_Rank/ForceRegularization.png">  
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Coordinating Filters for Faster Deep Neural Networks · In un'altra vita</title><meta name="description" content="Coordinating Filters for Faster Deep Neural Networks - Lamply"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/mugen.ico"><link rel="stylesheet" href="/css/apollo.css"><!-- link(rel="stylesheet", href=url_for("https://highlightjs.org/static/demo/styles/" + (theme.codestyle ? theme.codestyle : 'solarized-light') + ".css"))--><link rel="search" type="application/opensearchdescription+xml" href="https://lamply.github.io/atom.xml" title="In un'altra vita"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/mugen.ico" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Lamply" target="_blank" class="nav-list-link">GITHUB</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Coordinating Filters for Faster Deep Neural Networks</h1><div class="tags"><a href="/tags/论文笔记/" class="tag-title">#论文笔记</a></div><div class="post-info">Nov 15, 2017</div><div class="post-content"><div align="center">
+<img src="/2017/11/15/Low_Rank/ForceRegularization.png">  
 </div>
 
 <p>这篇论文是在学习压缩模型时无意中看到的，发表在 ICCV 2017。因为看到它的 motivation 觉得挺有意思的（昴星团瞩目），刚好还有代码，于是就学习了一下，顺带看看能不能用在项目上。  </p>
@@ -21,17 +21,17 @@
 <script type="math/tex; mode=display">W\in\mathbb{R}^{N \times C \times H \times W}</script><p>分解为一个低秩矩阵和一个1x1的卷积偏移</p>
 <script type="math/tex; mode=display">\beta_m\in\mathbb{R}^{M \times C \times H \times W}, b\in\mathbb{R}^{1 \times C \times H \times W}</script><p>那么输出的 feature map 为:  </p>
 <script type="math/tex; mode=display">O_n\approx(\sum^M_{m=1}b_m^{(n)}\beta_m)*I = \sum^M_{m=1}(b_m^{(n)}F_m)</script><p>这里的 </p>
-<script type="math/tex; mode=display">F_m = \beta_m * I</script><p>所以输出即低秩矩阵与输入的卷积的线性组合<br>&lt;/br&gt;</p>
+<script type="math/tex; mode=display">F_m = \beta_m * I</script><p>所以输出即低秩矩阵与输入的卷积的线性组合  </p>
 <p>然后是 <em>Force Regularization</em>:<br>从数学层面上看 <em>Force Regularization</em></p>
-<script type="math/tex; mode=display">\Delta W_i = \sum^N_{j=1}\Delta W_{ij} = ||W_i||\sum^N_{j=1}(f_{ji}-f_{ji}w_i^Tw_i)</script><script type="math/tex; mode=display">W_i \gets W_i-\eta \cdot (\frac{\partial E(W)}{\partial W_i}-\lambda_s \cdot \Delta W_i)</script><p>这里E(W)为损失，λs 为 trade off 因子，f_ji 如下：  </p>
+<script type="math/tex; mode=display">\Delta W_i = \sum^N_{j=1}\Delta W_{ij} = ||W_i||\sum^N_{j=1}(f_{ji}-f_{ji}w_i^Tw_i)</script><script type="math/tex; mode=display">W_i \gets W_i-\eta \cdot (\frac{\partial E(W)}{\partial W_i}-\lambda_s \cdot \Delta W_i)</script><p>这里E(W)为损失，λs 为 trade off 因子，\(f_{ji}\) 如下：  </p>
 <div align="center">
-<img src="/2018/08/07/Low_Rank/fji.png">  
-<img src="/2018/08/07/Low_Rank/fig_math.png">  
+<img src="/2017/11/15/Low_Rank/fji.png">  
+<img src="/2017/11/15/Low_Rank/fig_math.png">  
 </div>
 
 <p>在物理层面上看 <em>Force Regularization</em> , 像是引力将参数聚集在一起</p>
 <blockquote>
-<p>Suppose each vector <code>w_i</code> is a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick is massless and can freely spin around the origin. Given the pair-wise attractive forces (e.g.,universal gravitation) <code>f_ji</code>,Eq. (2) is the acceleration of particle <code>i</code>. As the forces are attractive, neighbor particles tend to spin around the origin to assemble together.  </p>
+<p>Suppose each vector \(w_i\) is a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick is massless and can freely spin around the origin. Given the pair-wise attractive forces (e.g.,universal gravitation) f_ji, Eq. (2) is the acceleration of particle \(i\). As the forces are attractive, neighbor particles tend to spin around the origin to assemble together.  </p>
 </blockquote>
 <p>作者认为, 增加 <em>Force Regularization</em> 可以让一簇滤波器趋向于有相同的方向, 而由于数据损失梯度的存在使得该正则项不影响原本滤波器提取有判别力的特征的能力(存疑)</p>
 <h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><p>实验使用 baseline 作为 pretrained model. 原因是在相同最大迭代次数下, 从 baseline 开始训练比从头开始要有更好的精准度和速度提升的tradeoff, 因为 pretrained model 提供了精准度和高关联性的初始化条件.  </p>
@@ -40,10 +40,10 @@
 <li><em>Force Regularization</em> 能在低层卷积保持低秩特性, 然后在高层卷积时有很大的压缩, 总体上看 rank ratio (低秩和全秩比) 大约为50%.  </li>
 <li>L2norm 在高 rank ratio 时表现得比较好, L1norm 在潜在低 rank ratio 时表现得更好.</li>
 </ul>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/08/07/Low_Rank_Research/" class="prev">上一篇</a><a href="/2018/08/07/caffe_things/" class="next">下一篇</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
-var disqus_identifier = '2018/08/07/Low_Rank/';
+</div></article></div></main><footer><div class="paginator"><a href="/2018/03/01/DeepLab/" class="prev">PREV</a><a href="/2017/10/17/Kaggle/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'https-lamply-github-io';
+var disqus_identifier = '2017/11/15/Low_Rank/';
 var disqus_title = 'Coordinating Filters for Faster Deep Neural Networks';
-var disqus_url = 'https://lamply.github.io/2018/08/07/Low_Rank/';
+var disqus_url = 'https://lamply.github.io/2017/11/15/Low_Rank/';
 (function() {
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
