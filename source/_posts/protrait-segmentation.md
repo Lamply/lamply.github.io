@@ -66,7 +66,13 @@ OSVOS 的做法
 | UNet（实时） | 91.96% | 3.95% |
 | 类 DeepLab V3+ | 93.7% | 2.3% |
 
-可以看到类 DeepLab V3+ 方法测试结果还是挺不错的，其余的多个私有测试集上表现也不错，它在 MIX2 上前向一张图片大概需要 120ms。除此之外，达到实时性能的 UNet 改进版也不错。
+可以看到类 DeepLab V3+ 方法测试结果还是挺不错的，其余的多个私有测试集上表现也不错，它在 MIX2 上前向一张图片大概需要 120ms。除此之外，达到实时性能的 UNet 改进版也不错，两者在 P-R 曲线上差异不是很大。
+<div align=center>
+<img src="protrait-segmentation/performance.png" width="80%">  
+非实时与实时网络的 P-R 曲线比较
+</div>
+
+
 
 
 ## 最终的效果 

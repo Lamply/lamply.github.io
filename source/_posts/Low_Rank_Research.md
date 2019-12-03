@@ -3,7 +3,7 @@ title: 关于 LRA 和 Force Regularization 的探索
 date: 2018-08-07 13:13:06
 tags: [技术经验, 模型加速和压缩]
 ---
-这部分是将上一篇提到的 _Force Regularization_ 和 _LRA_ 用于实际项目的效果，虽然现在看来不是很严谨，不过算是一次很好的尝试。
+这部分是将《Coordinating Filters for Faster Deep Neural Networks》中提到的 _Force Regularization_ 和 _LRA_ 用于实际项目的效果，虽然现在看来不是很严谨，不过算是一次很好的尝试。
 <!--more-->
 ### 设定
 为了探索 _Low-Rank Approximations ( LRA )_ 和 _Force Regularization_  ( 参考 _Wen. "Coordinating Filters for Faster Deep Neural Networks" ICCV 2017_ ) 在我的工程上的实际效果, 进行了一些实际测试. 由于时间限制, 主要进行了两次探索, 分别为:

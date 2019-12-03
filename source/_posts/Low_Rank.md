@@ -1,6 +1,6 @@
 ---
 title: Coordinating Filters for Faster Deep Neural Networks
-date: 2018-08-07 13:02:21
+date: 2017-11-15 16:45:11
 tags: [论文笔记]
 ---
 <div align=center>
@@ -33,20 +33,20 @@ $$\beta_m\in\mathbb{R}^{M \times C \times H \times W}, b\in\mathbb{R}^{1 \times 
 这里的 
 $$F_m = \beta_m * I$$ 
 所以输出即低秩矩阵与输入的卷积的线性组合  
-</br>
+
 
 然后是 _Force Regularization_:  
 从数学层面上看 _Force Regularization_
 $$\Delta W_i = \sum^N_{j=1}\Delta W_{ij} = ||W_i||\sum^N_{j=1}(f_{ji}-f_{ji}w_i^Tw_i)$$
 $$W_i \gets W_i-\eta \cdot (\frac{\partial E(W)}{\partial W_i}-\lambda_s \cdot \Delta W_i)$$
-这里E(W)为损失，λs 为 trade off 因子，f_ji 如下：  
+这里E(W)为损失，λs 为 trade off 因子，\\(f_{ji}\\) 如下：  
 <div align=center>
 <img src="Low_Rank/fji.png">  
 <img src="Low_Rank/fig_math.png">  
 </div>
 
 在物理层面上看 _Force Regularization_ , 像是引力将参数聚集在一起
-> Suppose each vector `w_i` is a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick is massless and can freely spin around the origin. Given the pair-wise attractive forces (e.g.,universal gravitation) `f_ji`,Eq. (2) is the acceleration of particle `i`. As the forces are attractive, neighbor particles tend to spin around the origin to assemble together.  
+> Suppose each vector \\(w_i\\) is a rigid stick and there is a particle fixed atthe endpoint. The particle has unit mass, and the stick is massless and can freely spin around the origin. Given the pair-wise attractive forces (e.g.,universal gravitation) f_ji, Eq. (2) is the acceleration of particle \\(i\\). As the forces are attractive, neighbor particles tend to spin around the origin to assemble together.  
 
 作者认为, 增加 _Force Regularization_ 可以让一簇滤波器趋向于有相同的方向, 而由于数据损失梯度的存在使得该正则项不影响原本滤波器提取有判别力的特征的能力(存疑)
 

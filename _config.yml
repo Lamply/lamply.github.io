@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: In un'altra vita
+title: In Un'Altra Vita
 subtitle:
 description:
 keywords:
@@ -74,7 +74,10 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 theme: apollo
 
-mathjax: true
+math:
+  engine: 'mathjax'
+
+# mathjax: true
 
 # hexo-tag-cloud
 tag_cloud:
