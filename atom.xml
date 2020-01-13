@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>In un&#39;altra vita</title>
+  <title>In Un&#39;Altra Vita</title>
   
   
   <link href="/atom.xml" rel="self"/>
@@ -159,86 +159,6 @@
   </entry>
   
   <entry>
-    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其四</title>
-    <link href="https://lamply.github.io/2018/07/11/%E4%B8%80%E8%87%B4%E6%80%A7%E5%AE%8C%E5%85%A8%E6%80%A7%E4%B8%8E%E5%87%A0%E4%BD%95%E5%AD%A6/"/>
-    <id>https://lamply.github.io/2018/07/11/一致性完全性与几何学/</id>
-    <published>2018-07-11T08:14:00.000Z</published>
-    <updated>2018-07-25T07:40:38.910Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文是 GEB 的第四章部分阅读笔记，这章开始深入对形式系统的意义起效做讨论，介绍了一致性、完全性，还有用于阐述未定义项的几何发展史。<br><a id="more"></a></p><h3 id="引论"><a href="#引论" class="headerlink" title="引论"></a>引论</h3><p>前面部分看着挺容易理解，不过不太好总结，主要是通过对位藏头诗来讲述意义的层次，即显明的意义和隐含的意义。而各层次的意义通过同构来传达。最后引出哥德尔定理，这是对位藏头诗的主要目的。  </p><p>这个对位藏头诗例子不太亲切，主要是关于唱机的唱针沿唱片纹道颤出声音，外界的所有声音和唱机本身也震颤，那总有一种唱片可以让唱机因为震颤而自毁。除此之外还有非常多隐藏的同构，就不列举了。  </p><p>接着介绍了不完全性，即真理超出了形式系统的定理资格的规定。然后深入形式系统讨论 真理 和 定理资格。  </p><p>这里举了个例子，把 pq 系统稍改一下，加入一条公理模式：若 x 是一个短杠串，则 xqxp- 是一个公理，那么之前的pq系统的解释就不能完全应用了，况且新旧定理存在不一致，比如 “—q-p-“ 和 “-q-p-“ 都是公理。为了重新获得一致性，我们只要把 q 的解释改为小于或等于就可以了。  </p><h3 id="几何发展史"><a href="#几何发展史" class="headerlink" title="几何发展史"></a>几何发展史</h3><p>通过刚才修改pq系统的例子，作者引出了对几何发展的历史的探讨。  </p><p>首先是欧几里得通过《几何原理》将当时的几何知识从最简单的概念和定义开始逐渐地、精细地建立成庞大的几何学体系。而所有的这些都只基于五条公设：  </p><ol><li>一条直线段可以联接两个点。</li><li>一条直线上任何一条直线段可以无限延伸。</li><li>给定一条直线段，可以以一个端点为圆心，以此线段为半径做一个圆。</li><li>一切直角都彼此相等。</li><li>如果两条直线与第三条直线相交时，在第三条直线的某一侧三条线所夹的内角之和小于两个直角的和，则那两条直线沿着这一侧延伸足够长之后必然相交。</li></ol><p>可以看到第五条公设不那么优雅，只是没有办法证明，所以只能设定为公设。（现在称没有第五条公设帮助的几何部分为绝对几何，额外满足第五公设的就是欧式几何，不满足第五公设而满足另外一个公设的就是非欧几何）  </p><p>后继者们为了证明第五公设花了很多力气，不过都是错的。其中有意思的是济罗拉莫·萨彻利曾通过反证得出一个“与直线的本质相抵触”的命题，不过他找到这个矛盾过后就不干了，这让他与后来“双曲几何学”失之交臂。而五十年过后，兰伯特也重复了这种失之交臂。直到再过了四十年，非欧几何被认可了。  </p><p>1823年非欧几何同时被J.鲍耶和罗巴切夫斯基发现，有意思的是同一年法国数学大家勒让德在相当程度上沿着萨彻利的路子想出了第五公设的一个证明。尽管其他人研究了很久一直都没有结果，但非欧几何的出现在那个时候是有奇妙的同时性的。这种科学发现的同时性是挺有趣的一个现象。  </p><h3 id="一致性、完全性"><a href="#一致性、完全性" class="headerlink" title="一致性、完全性"></a>一致性、完全性</h3><p>非欧几何的发现带来了一种启示，就是未定义项的问题。大体来说，得到“与直线的本质相抵触”的结果，是因为没有摆脱先入为主的“直线”概念。如果把它们当成未定义项，仅由公设来给它们定义，那就能得到不同的结果。这就跟之前 pq 系统中我们修改了 q 的解释一样，摆脱了先入为主的观念，从满足新的定理上重新找到了 q 的正确解释。  </p><p>（待续）</p><p><br></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文是 GEB 的第四章部分阅读笔记，这章开始深入对形式系统的意义起效做讨论，介绍了一致性、完全性，还有用于阐述未定义项的几何发展史。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其三</title>
-    <link href="https://lamply.github.io/2018/06/28/%E5%9B%BE%E5%BD%A2%E4%B8%8E%E8%A1%AC%E5%BA%95/"/>
-    <id>https://lamply.github.io/2018/06/28/图形与衬底/</id>
-    <published>2018-06-27T16:00:00.000Z</published>
-    <updated>2018-07-11T06:05:18.663Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文是 GEB 的第三章部分阅读笔记，内容多是我自己筛选、压缩、重排的，并尽可能的保留书中名词的译名和说法。因为我只有非数学系普通理工科大学生的数学基础，不怎么熟悉数论逻辑学什么的，所以可能会有某些错误的理解或说法，就酱。<br><a id="more"></a></p><h3 id="素数系统"><a href="#素数系统" class="headerlink" title="素数系统"></a>素数系统</h3><p>这部分先是引入描述素数的形式系统，然后试图通过构建其他更简单的类似形式系统来达到目的。<br>比如书中使用了一个看上去很聪明的方法：  </p><ol><li>构建tq系统（类似pq系统的乘法版本）</li><li>制定Cx定理（如果 xqy-tz- 是定理，则Cx是定理）来刻划合数（因为y- z- 为数量大于一的短杠）</li><li>草拟一个规则（如果Cx不是一个定理，则Px是个定理）来刻划素数  </li></ol><p>这样看上去似乎就完成了，然而这里面有一个重大缺陷：Cx是否是一个定理不是能够明显表达的印符操作，就像 WJU 系统中 WU 是不是定理没办法一下子看出来一样，我们必须要到形式系统之外才能推出什么什么不可能出现在定理中， 这是不符合被允许的印符操作的。</p><p>这里有个很关键的事情，就是当我们以 惟方式（W） 来工作时，我们很经常会混淆符号串与符号串的解释，把 —- 与 3 做同等对待，从而得出一些错误的结论。之前对形式化的要求就显得额外重要，我们不能把算术事实与印符定理相混淆。  </p><p>从这里书中开始谈论非定理的形式问题，我们可以知道定理都是具有共同“形式”的，即Cx，当x为合数数量的短杠时Cx为定理，那对应的非定理是否也是有同一种“形式”呢？答案是对，也不对（这里书中排除了非定理中非良构的符号串，比如 tt-Cqq 这种乱七八糟的东西），无可否认它们都具有某种印符特性，但这是否能称为“形式”确是不清楚的，因为它们是以否定的方式定义的。  </p><p><strong><strong>（题外话：可能会有人跳出来说，Cx规则与合数同构，因为合数反过来就是素数，所以Cx的良构非定理就和素数同构啦。虽然书中并没有对这个做论证，但我想大概就像之前说得那样，这种惟方式是不能用于替换推导的，后面可能就会有完全符合形式系统的方式来得出这种结论。）</strong></strong><br><br></p><h3 id="图形与衬底"><a href="#图形与衬底" class="headerlink" title="图形与衬底"></a>图形与衬底</h3><p><em>到这里书中跳到了另一个层次，讲述刚才的否定在其他层面的形象体现，并通过类比（Analogy，传说中 GEB 的核心）把这种否定观念代回到形式系统中。到这里就能明白之前阿基里斯和乌龟电话里的意思了，虽然我早就看出谜底是蜡烛，不过现在看来乌龟的图形与衬底的提示其实就是映射了“虫虫”谜题和“昔火”谜题，说明这章的主旨正是这种正反相衬。</em><br><br><br>这部分主要介绍了图形和衬底，一般来说，我们看到一幅画，会关注它的图形，也可以叫前景、正空间，不可避免的会产生衬底，也叫背景、负空间。那么除了一般的只有图形有意义，衬底只是附带的，那这幅画书中称作流畅可画出；如果图形和衬底都有意义，就叫倍流畅，就是双倍流畅的意思。埃舍尔就很擅长倍流畅的画，整幅画没有附带的部分，各个区域都是有意义的画像。  </p><p>然后在音乐中也存在这种现象，对应的是旋律与伴奏，还有音符落在强半拍和弱半拍的交织。  </p><p>回到形式系统，我们的目标是把作为负空间表示的素数个短杠符号串Cx改成用正空间表示的Px。从图形与衬底包含相同的信息来看，似乎这是一般意义上可行的，但是事实上只是在这个问题上才可行，有这样一个事实：  </p><p>  存在一个形式系统，其负空间（非定理集）不是任何一个形式系统的正空间（定理集）。  </p><p>换个更专业的描述即是，存在非递归的递归可枚举集。这里“递归可枚举”（缩写r.e.）对应艺术上的流畅可画出，简而言之就是可以按照印符规则生成的集合（所有形式的系统定理集）；“递归”则是对应倍流畅，意思是不仅它本身是r.e.，其补集也是r.e.。  </p><p>这就导致了存在一些形式系统，它们没有用印符规则表述的判断过程。  </p><p>关于这个论点的证明，作者没有详细给出，只是把上面的事实“当作信念而接受”。后面以所有图形都是倍流畅的吗来类比所有的集合都是递归的吗，然后完结这一个议题。  </p><p>最后部分给出了生成素数的形式系统，使用不整除和没有因子的规则来形成单向测试，这里不详细记录了。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文是 GEB 的第三章部分阅读笔记，内容多是我自己筛选、压缩、重排的，并尽可能的保留书中名词的译名和说法。因为我只有非数学系普通理工科大学生的数学基础，不怎么熟悉数论逻辑学什么的，所以可能会有某些错误的理解或说法，就酱。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其二</title>
-    <link href="https://lamply.github.io/2018/06/27/%E5%85%B3%E4%BA%8E%E5%BD%A2%E5%BC%8F%E7%B3%BB%E7%BB%9F/"/>
-    <id>https://lamply.github.io/2018/06/27/关于形式系统/</id>
-    <published>2018-06-26T16:00:00.000Z</published>
-    <updated>2018-07-11T05:58:28.587Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文是「GEB」第二、三章的读书笔记，这部分是边读边记，同时忽略了一些详细严谨的解释和讨论。<br><a id="more"></a></p><h4 id="pq系统"><a href="#pq系统" class="headerlink" title="pq系统"></a>pq系统</h4><p>首先引入一个简单构造的系统，一个由「p、q、-」三个符合组成的系统，它具有无数条公理，通过公理模式「x为一组短杠”-“，那么”x-qxp-“为一条公理」来产生。其生成规则只有一条「x、y、z为只包含短杠的符号串，若xqypz为定理，则x-qypz-为定理」。  </p><p>因为只包含了加长的规则，所以可以说这个系统存在判定过程。可以找出其判定过程就是：对于任意一个xqypz符号串，x、y、z为仅由短杠组成的符号串，若其数量x=y+z，则xqypz是一个定理。这属于一种自顶向下的判定过程。  </p><p>到这里就涉及到了一个书中的中心问题。可以看到pq的定理和加法的相似，比如 ——-q—p—- 是一条定理，因为5=2+3。但仔细一想，「——-q—p—-是一条定理」是否就和「5=2+3」是一样的呢，我们之所以会这么想，是因为我们在pq定理和加法运算之间看到了「同构」，即两个复杂结构可以互相映射，两者各部分都有两两对应，比如 ——- 对应 5，q 对应 =，— 对应 2，p 对应 +，—- 对应 3。这种对应关系有一个名称：解释。</p><p>其次，这种对应也存在于经过解释的定理和真陈述（真理）之间，比如刚才的pq定理，尽管它可以用其他猪牛马做解释，但唯有用加法来解释时同构存在于定理和现实的某部分中，所以这种解释是有意义的。  </p><p>值得注意的是，pq定理的加法解释是只有在其符合pq形式系统的形式（即xqypz形式）时才能够与真理同构的，这种形式上的符合称为「良构」。若符号串不是良构的，那就不能为此符号串赋予同等意义的解释，比如 ————q—p—p—p—，尽管 8=2+2+2+2，但该符号串并不是良构的，所以这不是一条定理，更不能赋予其意义。在这个基础上可以看到，形式系统的意义一定是被动的。  </p><p>后面的部分大致是关于将形式系统推广的时候遇到的障碍。要构造一个和真理完全同构的形式系统时，必须要让每一个定理为真理，每一个非定理为“假理”。但当定理集合无穷的情况下，我们怎么知道所有的定理都在这种解释方法下表达了真理？这里书中介绍了抽象理想的数，并引入了“欧几里得定理”的证明过程，这种证明的陈述具有紧密的上下联系，使得大家最终都必须相信看上去并不显然的结论。这个证明过程使用了新的特定的词汇，用于抽象描述数的性质，避开了无穷。  </p><p><br><br>到这里第二章结束。这一部分算是初步介绍了形式系统，从前面的pq系统开始介绍，后面似乎开始泛化，有点难抓住主题，每一小段都是单独一方面的具体描述，我有点云里雾里，只是隐约感受到开始将形式系统完备到能应用的有意义的状态，那些描述趋向于说明一些困难，以及某一些解决的手段。我觉得这里的困难大概就是前面乌龟和阿基里斯的对话那里隐喻的问题，非常地逻辑学和数学……  </p><p>后面几章会构造一个形式系统，并似乎要讨论关于该系统能否理论上达到我们的思维能力的水平。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文是「GEB」第二、三章的读书笔记，这部分是边读边记，同时忽略了一些详细严谨的解释和讨论。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《哥德尔·艾舍尔·巴赫——集异璧之大成》其一</title>
-    <link href="https://lamply.github.io/2018/06/21/WU%E8%B0%9C%E9%A2%98/"/>
-    <id>https://lamply.github.io/2018/06/21/WU谜题/</id>
-    <published>2018-06-20T16:00:00.000Z</published>
-    <updated>2019-03-05T14:50:34.642Z</updated>
-    
-    <content type="html"><![CDATA[<p>学习之余看起了以前没看完的书，顺便把博客环境重新搭了起来。<br><a id="more"></a></p><h3 id="WJU-谜题"><a href="#WJU-谜题" class="headerlink" title="WJU 谜题"></a>WJU 谜题</h3><p>这是在「GEB」里出现的一个谜题，原版书中是MU谜题，不过意思一样，讲的是通过在一个只包含WJU三个字符串的形式系统内给出WJ字符串要通过四条规则来产生WU字符串的谜题，这四条规则是：  </p><ol><li>如果字符串以J结尾则可以在其后加上一个U，即WUJ -&gt; WUJU</li><li>字符串  Wx 可以扩展为 Wxx，其中「x」为W后面的所有字符串，比如 WJ -&gt; WJJ, WUJ -&gt; WUJUJ</li><li>连续的三个J可以替换成一个U，即 JJJ -&gt; U，但一个U不能替换成三个J</li><li>连续的两个U可以剔除  </li></ol><p>整个系统产生的字符串都是顺序相关的，WJU与WUJ是不同的字符串。那么给定WJ字符串能否转换成WU呢？  </p><p>说实话，这章看得我一愣一愣的，因为这个谜题实际上是不可解的，J只能通过倍增以及三倍加减来变换，即含有质数2，这样得出的J的数量是不可能为3所整除的（假设U与3倍J等价），而书中以此谜题为例子后面却没有对这个谜题做出解答，转而阐述人类智能在处理形式系统时和机器的差异以及其他东西。我觉得如果能稍微提示下花个十来分钟做尝试，然后最后给出答案，再进行深入的探讨会合适很多。而且后面关于判定过程的部分翻译也有些错误和含糊，看得一愣一愣的就突然结束了话题。  </p><p>只能说这本书的写作风格不太符合一般的读书方式，好在大部分的意味都能理解到。</p><h5 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h5><p>提出该WJU系统的意义在于阐述对于一个形式系统的三种处理方式：书中称之为惟方式（W），机方式（J），无方式（U）。也就是分别对应从规则入手，在形式系统外审视其规则做出总结归纳，以及完全按照形式系统的规则像机器一样做运算。</p><p>[参考资料]<br>wiki： <a href="https://en.m.wikipedia.org/wiki/MU_puzzle" target="_blank" rel="noopener">https://en.m.wikipedia.org/wiki/MU_puzzle</a></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;学习之余看起了以前没看完的书，顺便把博客环境重新搭了起来。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="读书笔记" scheme="https://lamply.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
     <title>零核现象</title>
     <link href="https://lamply.github.io/2018/04/19/zero-kernels/"/>
     <id>https://lamply.github.io/2018/04/19/zero-kernels/</id>
@@ -257,6 +177,26 @@
     
     
       <category term="观测" scheme="https://lamply.github.io/tags/%E8%A7%82%E6%B5%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MobileNet V2</title>
+    <link href="https://lamply.github.io/2018/03/01/MobileNetsV2/"/>
+    <id>https://lamply.github.io/2018/03/01/MobileNetsV2/</id>
+    <published>2018-03-01T13:12:06.000Z</published>
+    <updated>2019-10-11T16:29:30.852Z</updated>
+    
+    <content type="html"><![CDATA[<p>这是关于轻量级网络 MobileNet 的改进版论文，作为万众瞩目的高效率骨干网络架构，它的更新意味着移动端网络的又一次改进。<br>原文链接： <a href="https://arxiv.org/pdf/1801.04381.pdf" target="_blank" rel="noopener">Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</a><br><a id="more"></a></p><h3 id="Main-Contribution"><a href="#Main-Contribution" class="headerlink" title="Main Contribution"></a>Main Contribution</h3><p>inverted residual with linear bottleneck. 输入低维压缩表征, 扩增到高维并进行 depthwise 卷积, 再通过线性卷积投射回低维表征.<br>该卷积结构因为不需要完全实现大的中间 feature map, 还能显著降低内存占用  </p><h3 id="Pre-Knowledge"><a href="#Pre-Knowledge" class="headerlink" title="Pre-Knowledge"></a>Pre-Knowledge</h3><ol><li><p>Depthwise Separable Convolutions<br>广泛应用的标准卷积替代品. 将标准卷积分解为两部分, 第一部分为 <em>depthwise convolution</em>, 即每一个输入通道使用对应的一个卷积核来滤波, 第二部分为 <em>pointwise convolution</em>, 即使用 1x1 卷积将上层特征线性组合得出新的特征.<br>\(d_o\) 个 \(k \cdot k\) 标准卷积花费 \(h_i\cdot w_i\cdot d_i\cdot d_o\cdot k^2\), 而相对应的 depthwise 分离卷积花费 \(h_i\cdot w_i\cdot d_i\cdot k^2 + h_i\cdot w_i\cdot d_i\cdot d_o\), 相当于减少了近 \(k^2\) 倍的计算量 ( 实际是乘了 \(\frac{1}{d_o}+\frac{1}{k^2}\) 倍 )</p></li><li><p>Linear Bottlenecks<br>这里讨论激活层的基本属性, 文中将激活层的 feature map 看作维度 \(h_i\times w_i\times d_i\) 的激活张量.<br>正式来说, 对于 \(L_i\) 层, 输入一组图像, 其激活组成了一个 “ manifold of interest “ ( 感兴趣流形? )<br>这里提出了关于 manifold of interest 的一些假设, 并通过实验证明在 bottleneck 中使用非线性会损坏信息, 给出了通过在卷积 block 内插入 linear bottleneck 可以达到 capture 低维 manifold of interest 的目的  </p></li><li><p>Inverted residuals<br>受 bottlenecks 实际上包含所有必要信息的直觉启发, 文中直接将 bottlenecks 间作为 shortcuts<br>最终该设计网络的层可以去除而不需要重新训练, 只减少一点点准确率</p></li><li><p>信息流的解释<br>文中阐述了该结构能将 building blocks 的输入和输出域很自然的分割开来, 作为网络每层的容量, 以及输入输出间的非线性函数作为表达力 ?  </p></li></ol><h3 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h3><p>Bottleneck &amp; Network:  </p><p><div align="center"><img src="/2018/03/01/MobileNetsV2/bottleneck.png"><img src="/2018/03/01/MobileNetsV2/block.png"><img src="/2018/03/01/MobileNetsV2/network.png"></div><br>在作者实验中, t 在 5~10 之间得出的结果大部分差不多, 只是在小网络中小的 t 值会稍微好一点, 大的网络中大的 t 值会稍微好一点<br>在整体网络结构中, 第一个 bottleneck t 值为 1 会比较好, 另外在小的网络宽度下, 保留最后几层卷积层的卷积核数会提高小网络的性能  </p><h3 id="Implementation-Notes"><a href="#Implementation-Notes" class="headerlink" title="Implementation Notes"></a>Implementation Notes</h3><p>这部分主要是关于推理时内存占用的优化问题, 大致来讲, 传统的结构的内存占用由并行结构主导 ( 即残差连接之类的 ), 而这类结构需要内存为通过计算的输入和输出 tensor 的总和<br>而文中提出的 building block 的内部操作均为 per-channel 的, 且随后的非 per-channel 操作具有很大的输入输出 size 比率 ( 即 bottleneck 的输入 channel 显著大于输出时的 channel ). 这样在内部操作中需要的内存占用仅仅为一个 channel 的 size, 而输出残差连接也因为 Invert Residual 减少了 channel 从而减少内存占用  </p><h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>比较关心分割方面的, 所以这里只记录关于分割的实验<br>实验在 PASCAL VOC 2012 上进行, 主要是比较各种 feature extractors 下的 DeepLab V3, 以及简化 DeepLab V3 的方法, 推理时采取不同的策略来提升性能. 结论如下  </p><ol><li>推理策略加入 multi-scale 和 left-right flipped 会显著地增加计算量, 所以在终端设备应用上不考虑</li><li>output_stride 为 16 比 8 更高效</li><li>在倒数第二层基础上做 DeepLab V3 会更高效, 因为 channel 小, 而且得到的性能相似</li><li>去掉 ASPP 会减小很多计算量而且只损失一点性能 <strong><em>( ASPP 没有进行 depth-wise 改进, 参见 DeepLab V3, 所以该结论在优化后的 ASPP 上实际效果存疑 )</em></strong></li></ol><h3 id="Ablation-study"><a href="#Ablation-study" class="headerlink" title="Ablation study"></a>Ablation study</h3><p>两个方面</p><ol><li>Invert residual connections 的有效性</li><li>违反常理的 linear bottleneck 能提升性能, 给 non-linearity 操作在 bottleneck 低维空间内损失信息的假设提供了支持</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这是关于轻量级网络 MobileNet 的改进版论文，作为万众瞩目的高效率骨干网络架构，它的更新意味着移动端网络的又一次改进。&lt;br&gt;原文链接： &lt;a href=&quot;https://arxiv.org/pdf/1801.04381.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation&lt;/a&gt;&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="论文笔记" scheme="https://lamply.github.io/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
@@ -292,26 +232,6 @@
     <summary type="html">
     
       &lt;p&gt;这部分是关于轻量级网络 ShuffleNet 的论文记录，主要是基于 channel shuffle 的想法来减少 CNN 中占大头的 1x1 卷积的计算量。&lt;br&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-      <category term="论文笔记" scheme="https://lamply.github.io/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MobileNet V2</title>
-    <link href="https://lamply.github.io/2018/03/01/MobileNetsV2/"/>
-    <id>https://lamply.github.io/2018/03/01/MobileNetsV2/</id>
-    <published>2018-03-01T13:12:06.000Z</published>
-    <updated>2019-10-11T16:29:30.852Z</updated>
-    
-    <content type="html"><![CDATA[<p>这是关于轻量级网络 MobileNet 的改进版论文，作为万众瞩目的高效率骨干网络架构，它的更新意味着移动端网络的又一次改进。<br>原文链接： <a href="https://arxiv.org/pdf/1801.04381.pdf" target="_blank" rel="noopener">Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</a><br><a id="more"></a></p><h3 id="Main-Contribution"><a href="#Main-Contribution" class="headerlink" title="Main Contribution"></a>Main Contribution</h3><p>inverted residual with linear bottleneck. 输入低维压缩表征, 扩增到高维并进行 depthwise 卷积, 再通过线性卷积投射回低维表征.<br>该卷积结构因为不需要完全实现大的中间 feature map, 还能显著降低内存占用  </p><h3 id="Pre-Knowledge"><a href="#Pre-Knowledge" class="headerlink" title="Pre-Knowledge"></a>Pre-Knowledge</h3><ol><li><p>Depthwise Separable Convolutions<br>广泛应用的标准卷积替代品. 将标准卷积分解为两部分, 第一部分为 <em>depthwise convolution</em>, 即每一个输入通道使用对应的一个卷积核来滤波, 第二部分为 <em>pointwise convolution</em>, 即使用 1x1 卷积将上层特征线性组合得出新的特征.<br>\(d_o\) 个 \(k \cdot k\) 标准卷积花费 \(h_i\cdot w_i\cdot d_i\cdot d_o\cdot k^2\), 而相对应的 depthwise 分离卷积花费 \(h_i\cdot w_i\cdot d_i\cdot k^2 + h_i\cdot w_i\cdot d_i\cdot d_o\), 相当于减少了近 \(k^2\) 倍的计算量 ( 实际是乘了 \(\frac{1}{d_o}+\frac{1}{k^2}\) 倍 )</p></li><li><p>Linear Bottlenecks<br>这里讨论激活层的基本属性, 文中将激活层的 feature map 看作维度 \(h_i\times w_i\times d_i\) 的激活张量.<br>正式来说, 对于 \(L_i\) 层, 输入一组图像, 其激活组成了一个 “ manifold of interest “ ( 感兴趣流形? )<br>这里提出了关于 manifold of interest 的一些假设, 并通过实验证明在 bottleneck 中使用非线性会损坏信息, 给出了通过在卷积 block 内插入 linear bottleneck 可以达到 capture 低维 manifold of interest 的目的  </p></li><li><p>Inverted residuals<br>受 bottlenecks 实际上包含所有必要信息的直觉启发, 文中直接将 bottlenecks 间作为 shortcuts<br>最终该设计网络的层可以去除而不需要重新训练, 只减少一点点准确率</p></li><li><p>信息流的解释<br>文中阐述了该结构能将 building blocks 的输入和输出域很自然的分割开来, 作为网络每层的容量, 以及输入输出间的非线性函数作为表达力 ?  </p></li></ol><h3 id="Architecture"><a href="#Architecture" class="headerlink" title="Architecture"></a>Architecture</h3><p>Bottleneck &amp; Network:  </p><p><div align="center"><img src="/2018/03/01/MobileNetsV2/bottleneck.png"><img src="/2018/03/01/MobileNetsV2/block.png"><img src="/2018/03/01/MobileNetsV2/network.png"></div><br>在作者实验中, t 在 5~10 之间得出的结果大部分差不多, 只是在小网络中小的 t 值会稍微好一点, 大的网络中大的 t 值会稍微好一点<br>在整体网络结构中, 第一个 bottleneck t 值为 1 会比较好, 另外在小的网络宽度下, 保留最后几层卷积层的卷积核数会提高小网络的性能  </p><h3 id="Implementation-Notes"><a href="#Implementation-Notes" class="headerlink" title="Implementation Notes"></a>Implementation Notes</h3><p>这部分主要是关于推理时内存占用的优化问题, 大致来讲, 传统的结构的内存占用由并行结构主导 ( 即残差连接之类的 ), 而这类结构需要内存为通过计算的输入和输出 tensor 的总和<br>而文中提出的 building block 的内部操作均为 per-channel 的, 且随后的非 per-channel 操作具有很大的输入输出 size 比率 ( 即 bottleneck 的输入 channel 显著大于输出时的 channel ). 这样在内部操作中需要的内存占用仅仅为一个 channel 的 size, 而输出残差连接也因为 Invert Residual 减少了 channel 从而减少内存占用  </p><h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p>比较关心分割方面的, 所以这里只记录关于分割的实验<br>实验在 PASCAL VOC 2012 上进行, 主要是比较各种 feature extractors 下的 DeepLab V3, 以及简化 DeepLab V3 的方法, 推理时采取不同的策略来提升性能. 结论如下  </p><ol><li>推理策略加入 multi-scale 和 left-right flipped 会显著地增加计算量, 所以在终端设备应用上不考虑</li><li>output_stride 为 16 比 8 更高效</li><li>在倒数第二层基础上做 DeepLab V3 会更高效, 因为 channel 小, 而且得到的性能相似</li><li>去掉 ASPP 会减小很多计算量而且只损失一点性能 <strong><em>( ASPP 没有进行 depth-wise 改进, 参见 DeepLab V3, 所以该结论在优化后的 ASPP 上实际效果存疑 )</em></strong></li></ol><h3 id="Ablation-study"><a href="#Ablation-study" class="headerlink" title="Ablation study"></a>Ablation study</h3><p>两个方面</p><ol><li>Invert residual connections 的有效性</li><li>违反常理的 linear bottleneck 能提升性能, 给 non-linearity 操作在 bottleneck 低维空间内损失信息的假设提供了支持</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;这是关于轻量级网络 MobileNet 的改进版论文，作为万众瞩目的高效率骨干网络架构，它的更新意味着移动端网络的又一次改进。&lt;br&gt;原文链接： &lt;a href=&quot;https://arxiv.org/pdf/1801.04381.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation&lt;/a&gt;&lt;br&gt;&lt;/p&gt;
     
     </summary>
     
