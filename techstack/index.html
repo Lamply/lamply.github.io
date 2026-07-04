@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="keywords" content="技术经验,问题记录,思考分享" />
+    <!-- 移动端浏览器外壳着色：宣纸（亮）/ 暖墨黑（暗），与 --vp-c-bg 保持一致 -->
+    <meta
+      name="theme-color"
+      content="#faf6ef"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1c1814"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.cn" />
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+    <link
+      href="https://fonts.googleapis.cn/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --vp-c-bg: #faf6ef;
+      }
+
+      [data-theme="dark"] {
+        --vp-c-bg: #1c1814;
+      }
+
+      html,
+      body {
+        background: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const userMode = localStorage.getItem("vuepress-theme-hope-scheme");
+      const systemDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (userMode === "dark" || (userMode !== "light" && systemDarkMode)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"技术栈","description":"社会，就如同人的身体，拥有相互关联的部分、需要和功能。 ——埃米尔·涂尔干 现代社会是高度合作的社会。无论是哪个行业，都需要遵循一定的标准规范。使用他人提供的工具、遵循他人制定的流程，来完成个体的工作。 在软件开发领域，通常管这个叫技术栈。但对我来说，这更像是由一次次实践累积起来的“实践指南”，于是我打算记录下自己使用过的这些由他人提供的工具和流程。 ..."}</script><meta property="og:url" content="https://lamply.github.io/techstack/"><meta property="og:site_name" content="Lamply Pages"><meta property="og:title" content="技术栈"><meta property="og:description" content="社会，就如同人的身体，拥有相互关联的部分、需要和功能。 ——埃米尔·涂尔干 现代社会是高度合作的社会。无论是哪个行业，都需要遵循一定的标准规范。使用他人提供的工具、遵循他人制定的流程，来完成个体的工作。 在软件开发领域，通常管这个叫技术栈。但对我来说，这更像是由一次次实践累积起来的“实践指南”，于是我打算记录下自己使用过的这些由他人提供的工具和流程。 ..."><meta property="og:type" content="website"><meta property="og:locale" content="zh-CN"><meta property="og:updated_time" content="2026-07-04T13:04:03.000Z"><meta property="article:published_time" content="2026-07-03T00:00:00.000Z"><meta property="article:modified_time" content="2026-07-04T13:04:03.000Z"><link rel="alternate" type="application/atom+xml" href="https://lamply.github.io/atom.xml" title="Lamply Pages Atom Feed"><link rel="alternate" type="application/json" href="https://lamply.github.io/feed.json" title="Lamply Pages JSON Feed"><link rel="alternate" type="application/rss+xml" href="https://lamply.github.io/rss.xml" title="Lamply Pages RSS Feed"><link rel="icon" href="/letter-l.png"><title>技术栈 | Lamply Pages</title><meta name="description" content="社会，就如同人的身体，拥有相互关联的部分、需要和功能。 ——埃米尔·涂尔干 现代社会是高度合作的社会。无论是哪个行业，都需要遵循一定的标准规范。使用他人提供的工具、遵循他人制定的流程，来完成个体的工作。 在软件开发领域，通常管这个叫技术栈。但对我来说，这更像是由一次次实践累积起来的“实践指南”，于是我打算记录下自己使用过的这些由他人提供的工具和流程。 ...">
+    <link rel="preload" href="/assets/style-BlJQc3f_.css" as="style"><link rel="stylesheet" href="/assets/style-BlJQc3f_.css">
+    <link rel="modulepreload" href="/assets/app-CaMxC0O2.js"><link rel="modulepreload" href="/assets/README-DgDJ5zMe.js"><link rel="modulepreload" href="/assets/plugin-vue_export-helper-BDNMzG2s.js">
+    
+    <!-- 统计代码区域：在此粘贴你自己的 Google Tag Manager / Umami / 百度统计 等脚本 -->
+  </head>
+  <body>
+    <div id="app"><!--[--><!--[--><!--[--><span tabindex="-1"></span><a href="#main-content" class="vp-skip-link sr-only">跳至主要內容</a><!--]--><!--[--><div class="theme-container external-link-icon has-toc" vp-container><!--[--><header id="navbar" class="vp-navbar" vp-navbar><div class="vp-navbar-start"><button type="button" class="vp-toggle-sidebar-button" title="Toggle Sidebar"><span class="icon"></span></button><!--[--><a class="route-link vp-brand" href="/" aria-label="带我回家"><img class="vp-nav-logo" src="/letter-l.png" alt><!----><span class="vp-site-name hide-in-pad">Lamply Pages</span></a><!--]--></div><div class="vp-navbar-center"><!--[--><!----><!--]--></div><div class="vp-navbar-end"><!--[--><div class="vp-nav-item vp-action"><a class="vp-action-link" href="https://github.com/Lamply" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" class="icon github-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="github icon" name="github" style="width:1.25rem;height:1.25rem;vertical-align:middle;"><path d="M511.957 21.333C241.024 21.333 21.333 240.981 21.333 512c0 216.832 140.544 400.725 335.574 465.664 24.49 4.395 32.256-10.07 32.256-23.083 0-11.69.256-44.245 0-85.205-136.448 29.61-164.736-64.64-164.736-64.64-22.315-56.704-54.4-71.765-54.4-71.765-44.587-30.464 3.285-29.824 3.285-29.824 49.195 3.413 75.179 50.517 75.179 50.517 43.776 75.008 114.816 53.333 142.762 40.79 4.523-31.66 17.152-53.377 31.19-65.537-108.971-12.458-223.488-54.485-223.488-242.602 0-53.547 19.114-97.323 50.517-131.67-5.035-12.33-21.93-62.293 4.779-129.834 0 0 41.258-13.184 134.912 50.346a469.803 469.803 0 0 1 122.88-16.554c41.642.213 83.626 5.632 122.88 16.554 93.653-63.488 134.784-50.346 134.784-50.346 26.752 67.541 9.898 117.504 4.864 129.834 31.402 34.347 50.474 78.123 50.474 131.67 0 188.586-114.73 230.016-224.042 242.09 17.578 15.232 33.578 44.672 33.578 90.454v135.85c0 13.142 7.936 27.606 32.854 22.87C862.25 912.597 1002.667 728.747 1002.667 512c0-271.019-219.648-490.667-490.71-490.667z"></path></svg></a></div><!--[--><button type="button" class="slimsearch-button" aria-label="搜索"><svg xmlns="http://www.w3.org/2000/svg" class="icon search-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-label="search icon"><path d="M192 480a256 256 0 1 1 512 0 256 256 0 0 1-512 0m631.776 362.496-143.2-143.168A318.464 318.464 0 0 0 768 480c0-176.736-143.264-320-320-320S128 303.264 128 480s143.264 320 320 320a318.016 318.016 0 0 0 184.16-58.592l146.336 146.368c12.512 12.48 32.768 12.48 45.28 0 12.48-12.512 12.48-32.768 0-45.28"></path></svg><div class="slimsearch-placeholder">搜索</div><div class="slimsearch-key-hints"><kbd class="slimsearch-key">Ctrl</kbd><kbd class="slimsearch-key">K</kbd></div></button><!--]--><!--]--><button type="button" class="vp-toggle-navbar-button" aria-label="Toggle Navbar" aria-expanded="false" aria-controls="nav-screen"><span><span class="vp-top"></span><span class="vp-middle"></span><span class="vp-bottom"></span></span></button></div></header><!----><!--]--><!----><div class="toggle-sidebar-wrapper"><span class="arrow start"></span></div><aside id="sidebar" class="vp-sidebar" vp-sidebar><!----><ul class="vp-sidebar-links"><li><section class="vp-sidebar-group"><button class="vp-sidebar-header clickable exact active" type="button"><iconify-icon class="vp-icon" icon="material-symbols:stack" sizing="both" width="1em" height="1em"></iconify-icon><a class="route-link route-link-active auto-link vp-sidebar-title no-external-link-icon" href="/techstack/" aria-label="技术栈"><!---->技术栈<!----></a><span class="vp-arrow down"></span></button><ul class="vp-sidebar-links"><li><section class="vp-sidebar-group"><p class="vp-sidebar-header active"><iconify-icon class="vp-icon" icon="fa6-solid:cube" sizing="both" width="1em" height="1em"></iconify-icon><span class="vp-sidebar-title">软件框架</span><!----></p><ul class="vp-sidebar-links"><li><a class="route-link auto-link vp-sidebar-link" href="/techstack/PyTorch.html" aria-label="PyTorch"><!---->PyTorch<!----></a></li></ul></section></li></ul></section></li><li><section class="vp-sidebar-group"><button class="vp-sidebar-header clickable" type="button"><iconify-icon class="vp-icon" icon="fa6-solid:blog" sizing="both" width="1em" height="1em"></iconify-icon><span class="vp-sidebar-title">博客文章</span><span class="vp-arrow end"></span></button><!----></section></li></ul><!----></aside><!--[--><main id="main-content" class="vp-page"><!--[--><!----><!----><nav class="vp-breadcrumb disable"></nav><div class="vp-page-title"><h1><!---->技术栈</h1><div class="page-info"></div><hr></div><!----><div class="" vp-content><!----><div id="markdown-content"><blockquote><p>社会，就如同人的身体，拥有相互关联的部分、需要和功能。 ——埃米尔·涂尔干</p></blockquote><hr><p>现代社会是高度合作的社会。无论是哪个行业，都需要遵循一定的标准规范。使用他人提供的工具、遵循他人制定的流程，来完成个体的工作。</p><p>在软件开发领域，通常管这个叫技术栈。但对我来说，这更像是由一次次实践累积起来的“实践指南”，于是我打算记录下自己使用过的这些由他人提供的工具和流程。</p><p>这些实践指南是高度<strong>片面</strong>、<strong>个人化</strong>且<strong>实用主义</strong>的，包含了我个人的粗略理解、大量的使用案例、各式各样的问题记录，当作手册来随时查阅、增改。</p></div><!----><!----><!----></div><footer class="vp-page-meta"><!----><div class="vp-meta-item git-info"><div class="update-time"><span class="vp-meta-label">最近更新: </span><time class="vp-meta-info" datetime="2026-07-04T13:04:03.000Z" data-allow-mismatch>2026/7/4 13:04</time></div><!----></div></footer><!----><!----><!----><!--]--></main><!--]--><footer class="vp-footer-wrapper" vp-footer><!----><div class="vp-copyright">
+  版权声明：自由转载 - 非商用 - 非衍生 - 保持署名<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer">（创意共享 4.0 许可证）</a>|
+  Copyright © 2026-present Lamply</a>
+  </div></footer></div><!--]--><!--]--><!--[--><!----><!----><!--[--><!--]--><!--]--><!--]--></div>
+    <script type="module" src="/assets/app-CaMxC0O2.js" defer></script>
+  </body>
+</html>
