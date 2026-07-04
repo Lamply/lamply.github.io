@@ -12,8 +12,8 @@ export default hopeTheme(
     },
 
     // 现代浏览器优先用朱砂色 SVG，老浏览器自动 fallback 到 /favicon.ico
-    favicon: "/logo.svg",
-    logo: "/logo.svg",
+    favicon: "/letter-l.png",
+    logo: "/letter-l.png",
 
     // 网站文章的版权声明
     license: "CC BY-NC-ND 4.0",
@@ -41,7 +41,7 @@ export default hopeTheme(
     fullscreen: false,
 
     // 默认为 GitHub. 同时也可以是一个完整的 URL
-    repo: "Lamply/blog-v3",
+    repo: "Lamply",
     // 自定义仓库链接文字。默认从 `repo` 中自动推断为 "GitHub" / "GitLab" / "Gitee" / "Bitbucket" 其中之一，或是 "Source"。
     repoLabel: "GitHub",
     // 是否在导航栏内显示仓库链接，默认为 `true`
@@ -55,10 +55,10 @@ export default hopeTheme(
     navbarLayout: {
       start: ["Brand"],
       center: ["Links"],
-      end: ["Repo", "Outlook", "Search"],
+      end: ["Repo", "Search"],
     },
     // 是否在向下滚动时自动隐藏导航栏
-    navbarAutoHide: "always",
+    navbarAutoHide: "mobile",
 
     // sidebar
     sidebar: sidebar,
@@ -66,14 +66,15 @@ export default hopeTheme(
     // sidebarSorter: ['readme', 'order', 'title'],
 
     // 页面布局 Frontmatter 配置：https://theme-hope.vuejs.press/zh/config/frontmatter/layout.html#pageinfo
-    pageInfo: ["Category", "Tag", "Word", "ReadingTime", "PageView"],
+    // pageInfo: ["Category", "Tag", "Word", "ReadingTime", "PageView"],
+    pageInfo: [],
 
     // 主题功能选项：https://theme-hope.vuejs.press/zh/config/theme/feature.html
     blog: {
       articleInfo: ["Date", "PageView", "Category", "Tag", "ReadingTime"],
       name: "Lamply",
       avatar: "/avatar_self.webp",
-      description: "想做一个忠实的记录者，探索应然之事",
+      description: "做一个忠实的记录者，探索应然之事",
       // intro: "/intro.html",
       medias: {
         GitHub: "https://github.com/Lamply",
@@ -170,9 +171,9 @@ export default hopeTheme(
 
 
       // 组件库
-      components: {
-        components: ["Badge", "BiliBili"],
-      },
+      // components: {
+      //   components: ["Badge", "BiliBili"],
+      // },
 
       // Algolia 全文搜索：需要自己设置爬虫并生成下方配置，如不会自己设置，启用下方本地搜索
       /* 

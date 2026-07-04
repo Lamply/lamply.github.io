@@ -8,7 +8,7 @@ categories:
   - 底层本体
   - STEM
 tags:
-modified: 2026-07-04T12:10:43+08:00
+modified: 2026-07-04T16:48:42+08:00
 ---
 
 动态计算图框架，根据运行时定义计算，可以在迭代中修改计算图，最终对标量输出节点使用 `.backward()` 实现自动求导并将梯度累积保存在 `.grad` 里。比如，想要知道模型分类不够理想的地方表现在输入图像的哪些区域上，可以这样做：
@@ -74,7 +74,7 @@ nn.Sequential(*[Conv(), BN(), ReLU()])
 ### RNN
 多层 Elman RNN 的实现，也就是一般的 RNN
 
-$$ht​=tanh(x_t​W_{ih}^T​+b_{ih}​+h_{t−1}​W_{hh}^T​+b_{hh}​)$$
+$$h_t​=tanh(x_t​W_{ih}^T​+b_{ih}​+h_{t−1}​W_{hh}^T​+b_{hh}​)$$
 
 ```python
 torch.nn.RNN(input_size, hidden_size, num_layers=1, batch_first=False)

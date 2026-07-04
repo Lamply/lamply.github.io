@@ -4,42 +4,25 @@ import { sidebar } from "vuepress-theme-hope";
 // https://fontawesome.com/search?m=free&o=r
 export default sidebar({
   "/": [
-    // "DailyRoutine",
-    // "Fitness",
-    // 读书笔记架构更换到 docsify，不能使用相对链接
-    // { text: "读书笔记", icon: "fa6-brands:readme", link: "https://newzone.top/reading/" },
-    // 指定显示页面
-    // {
-    //   text: "🧰 应用手册",
-    //   icon: "",
-    //   prefix: "apps/",
-    //   collapsible: true,
-    //   children: [
-    //     "Applist.md",
-    //     "toolbox.md",
-    //     "encrypt03.md",
-    //     {
-    //       text: "其他",
-    //       icon: "fa6-solid:code-compare",
-    //       collapsible: true,
-    //       children: ["design.md"],
-    //     },
-    //   ],
-    // },
     {
       text: "技术栈",
       icon: "material-symbols:stack",
       prefix: "techstack/",
       link: "techstack/README.md",
       collapsible: true,
+      expanded: true,
       children: [
         {
           text: "软件框架",
-          collapsible: false,
+          icon: "fa6-solid:cube",
+          // collapsible: true,
+          // expanded: true,
           children: ["PyTorch.md"]
         },
       ],
     },
+    // icon: software, code
+
     // {
     //   text: "🏗️ 网站部署",
     //   icon: "",
