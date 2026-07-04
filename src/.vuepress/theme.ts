@@ -5,10 +5,10 @@ import sidebar from "./sidebar.js";
 export default hopeTheme(
   {
     // 主题选项：https://theme-hope.vuejs.press/zh/config/theme/layout.html
-    hostname: "https://newzone.top",
+    hostname: "https://lamply.github.io",
     author: {
-      name: "LearnData",
-      url: "https://newzone.top",
+      name: "Lamply",
+      url: "https://lamply.github.io",
     },
 
     // 现代浏览器优先用朱砂色 SVG，老浏览器自动 fallback 到 /favicon.ico
@@ -21,7 +21,7 @@ export default hopeTheme(
     // copyright 默认为 Copyright © <作者>
     copyright: `
   版权声明：自由转载 - 非商用 - 非衍生 - 保持署名<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-hans" target="_blank" rel="noopener noreferrer">（创意共享 4.0 许可证）</a>|
-  Copyright © 2023-present LearnData</a>
+  Copyright © 2026-present Lamply</a>
   `,
     displayFooter: true,
     // 页脚，支持使用 HTMLString 以显示备案信息等
@@ -36,12 +36,12 @@ export default hopeTheme(
     editLink: false,
 
     // 深色模式配置
-    darkmode: "switch",
+    darkmode: "enable",
     // 全屏按钮
-    fullscreen: true,
+    fullscreen: false,
 
     // 默认为 GitHub. 同时也可以是一个完整的 URL
-    repo: "rockbenben/LearnData",
+    repo: "Lamply/blog-v3",
     // 自定义仓库链接文字。默认从 `repo` 中自动推断为 "GitHub" / "GitLab" / "Gitee" / "Bitbucket" 其中之一，或是 "Source"。
     repoLabel: "GitHub",
     // 是否在导航栏内显示仓库链接，默认为 `true`
@@ -55,10 +55,10 @@ export default hopeTheme(
     navbarLayout: {
       start: ["Brand"],
       center: ["Links"],
-      end: ["SocialLink", "Repo", "Outlook", "Search"],
+      end: ["Repo", "Outlook", "Search"],
     },
     // 是否在向下滚动时自动隐藏导航栏
-    // navbarAutoHide: "always",
+    navbarAutoHide: "always",
 
     // sidebar
     sidebar: sidebar,
@@ -71,23 +71,18 @@ export default hopeTheme(
     // 主题功能选项：https://theme-hope.vuejs.press/zh/config/theme/feature.html
     blog: {
       articleInfo: ["Date", "PageView", "Category", "Tag", "ReadingTime"],
-      name: "清顺",
+      name: "Lamply",
       avatar: "/avatar_self.webp",
-      description: "迷信新工具，热衷于研究开源软件、心理学理论，定期分享探索成果",
-      intro: "/intro.html",
+      description: "想做一个忠实的记录者，探索应然之事",
+      // intro: "/intro.html",
       medias: {
-        GitHub: "https://github.com/rockbenben",
-        Zhihu: "https://www.zhihu.com/people/qingwhat",
-        少数派: { icon: "https://newzone.top/icons/sspai.svg", link: "https://sspai.com/u/zqj05i4v/posts" },
-        Wechat: "https://img.newzone.top/wechat.svg",
-        Email: "mailto:learndata@newzone.top",
-        Discord: "https://discord.gg/PZTQfJ4GjX",
-        RSS: "/rss.xml",
+        GitHub: "https://github.com/Lamply",
+        // 少数派: { icon: "https://newzone.top/icons/sspai.svg", link: "https://sspai.com/u/zqj05i4v/posts" },
       },
     },
 
     // 隐藏打印按钮
-    // print: false,
+    print: false,
 
     markdown: {
       // shiki 代码高亮主题：vitesse 暖色系，与朱砂 + 宣纸/暖墨黑配色协调
@@ -111,6 +106,9 @@ export default hopeTheme(
       imgSize: true, // 启用图片大小
       hint: true, // 启用提示容器，默认启用
       alert: true, // 启用 GFM 警告
+      math: {
+        type: "mathjax",
+      },
     },
 
     plugins: {
@@ -162,13 +160,14 @@ export default hopeTheme(
       },
       */
 
-        // Giscus
-        provider: "Giscus",
-        repo: "rockbenben/giscus-comment",
-        repoId: "R_kgDOM_MPJA",
-        category: "Comments",
-        categoryId: "DIC_kwDOM_MPJM4CjS0P",
+        // // Giscus
+        // provider: "Giscus",
+        // repo: "Lamply/hugo_stack_pages",
+        // repoId: "",
+        // category: "",
+        // categoryId: "",
       },
+
 
       // 组件库
       components: {
@@ -200,20 +199,20 @@ export default hopeTheme(
     },
     // https://theme-hope.vuejs.press/zh/guide/feature/encrypt.html
     // 加密配置样例（不需要可删除）注意，受到 VuePress 的限制，在未解密前，文章内容仅仅被隐藏，访问者仍可以从源码中获取文章的内容。
-    encrypt: {
-      config: {
-        // 这会加密整个 encrypt 目录，并且两个密码都是可用的
-        "/encrypt/": {
-          password: ["1234", "5678"],
-          hint: "从 xxx 获取密码",
-        },
-        // 这只会加密 /apps/encrypt03.html 页面
-        "/apps/encrypt03.html": {
-          password: "1234",
-          hint: "从 xxx 获取密码",
-        },
-      },
-    },
+    // encrypt: {
+    //   config: {
+    //     // 这会加密整个 encrypt 目录，并且两个密码都是可用的
+    //     "/encrypt/": {
+    //       password: ["1234", "5678"],
+    //       hint: "从 xxx 获取密码",
+    //     },
+    //     // 这只会加密 /apps/encrypt03.html 页面
+    //     "/apps/encrypt03.html": {
+    //       password: "1234",
+    //       hint: "从 xxx 获取密码",
+    //     },
+    //   },
+    // },
 
     // 开发模式下是否启动热更新，显示所有更改并重新渲染
     hotReload: true,

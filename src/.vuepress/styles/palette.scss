@@ -1,57 +1,78 @@
-/*
-极简东方配色：宣纸 + 墨黑 + 朱砂
-- 亮模式：宣纸暖白底 + 墨黑文字
-- 暗模式：暖墨黑底（不是冷蓝紫）+ 米色文字
-- 全站唯一品牌主色：朱砂红 #a72b2a（亮模式）/ #d97070（暗模式自动适应）
-代码来源：https://theme-hope.vuejs.press/zh/config/style.html
-*/
 
 // background
 $vp-c-bg: (
-  light: #faf6ef,
-  dark: #1c1814,
+  light: #fff,
+  dark: #1b1b1f,
 );
 $vp-c-bg-alt: (
-  light: #f3eee5,
-  dark: #26211c,
+  light: #f6f6f7,
+  dark: #161618,
 );
 $vp-c-bg-elv: (
-  light: #ffffff,
-  dark: #2d2823,
+  light: #fff,
+  dark: #202127,
 );
 
 // text
 $vp-c-text: (
-  light: #1c1917,
-  dark: rgb(240 232 216 / 92%),
+  light: rgb(60 60 67),
+  dark: rgb(235 235 245 / 86%),
 );
 
 // border
 $vp-c-border: (
-  light: #dcd5c8,
-  dark: #3d3631,
+  light: #c2c2c4,
+  dark: #3c3f44,
 );
 $vp-c-divider: (
-  light: #e8e2d5,
-  dark: #332e29,
+  light: #e2e2e3,
+  dark: #2e2e32,
 );
 
 // shadow
 $vp-c-shadow: (
-  light: rgb(28 25 23 / 8%),
-  dark: rgb(0 0 0 / 40%),
+  light: rgb(0 0 0 / 15%),
+  dark: rgb(0 0 0 / 30%),
 );
 
 // control
 $vp-c-control: (
-  light: rgb(120 110 95 / 8%),
-  dark: rgb(220 210 190 / 8%),
+  light: rgb(142 150 170 / 10%),
+  dark: rgb(101 117 133 / 12%),
 );
 $vp-c-control-hover: (
-  light: rgb(120 110 95 / 14%),
-  dark: rgb(220 210 190 / 14%),
+  light: rgb(142 150 170 / 16%),
+  dark: rgb(101 117 133 / 18%),
 );
 $vp-c-control-disabled: (
-  light: #ebe6dc,
-  dark: #3a342f,
+  light: #eaeaea,
+  dark: #363636,
 );
+
+// $navbar-height: 导航栏高度
+// $navbar-padding-x: 导航栏水平填充
+// $navbar-padding-y: 导航栏垂直填充
+// $navbar-mobile-height: 移动设备上的导航栏高度
+// $navbar-mobile-padding-x: 移动设备上的导航栏水平填充
+// $navbar-mobile-padding-y: 移动设备上的导航栏垂直填充
+
+// navbar
+$navbar-height: 3.75rem;
+$navbar-padding-x: 1.5rem;
+$navbar-padding-y: 0.7rem;
+$navbar-mobile-height: 3.25rem;
+$navbar-mobile-padding-x: 1rem;
+$navbar-mobile-padding-y: 0.5rem;
+
+// sidebar
+$sidebar-width: 15rem;
+$sidebar-mobile-width: 13rem;
+
+// $content-width: 主要内容的宽度
+// $wide-content-width: 宽屏上主要内容的宽度 (屏幕宽度 >= 1920px)
+// $home-page-width: 主页内容的宽度
+
+// content
+$content-width: 680px;
+$wide-content-width: 720px;
+$home-page-width: 1160px;

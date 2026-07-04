@@ -1,11 +1,12 @@
 ---
 article: false
-title: LearnData 开源笔记
-description: 演示站：你正在浏览 LearnData 模板的默认样态。Use this template 创建仓库后部署得到的就是这套站点框架，按需替换内容即可上线属于自己的知识库。
-icon: fa6-solid:book-open-reader
+title: Lamply Pages
+description:
+icon:
+modified: 2026-07-04T12:31:40+08:00
 ---
 
-> 你看到的就是 [LearnData](https://github.com/rockbenben/LearnData) 模板的演示站点。
+> 笔记不是我思考过程的记录，而是我的思考过程本身。 —— 理查德·费曼
 
 ## 这里是什么
 
