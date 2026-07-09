@@ -1,6 +1,6 @@
 allowBuilds:
   "@parcel/watcher": true
-  cn-font-split: false
+  cn-font-split: true
   esbuild: true
   koffi: false
   protobufjs: false
