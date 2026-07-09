@@ -1,5 +1,6 @@
 import { viteBundler } from "@vuepress/bundler-vite";
 import { defineUserConfig } from "vuepress";
+import Font from "vite-plugin-font"
 // 谷歌分析：启用时取消本行注释，并填回下方 plugins 里你自己的 GA4 ID
 // import { googleAnalyticsPlugin } from "@vuepress/plugin-google-analytics";
 
@@ -42,5 +43,18 @@ export default defineUserConfig({
     // FAQ 结构化数据（frontmatter faq -> FAQPage JSON-LD）
     faqSchemaPlugin(),
   ],
-  bundler: viteBundler(),
+  bundler: viteBundler({
+    viteOptions: {
+      plugins: [
+        Font.vite({
+          // 只切分中文字体文件
+          include: [/AlibabaPuHuiTi-3-.*\.ttf$/],
+          css: {
+            // 显式指定切分后生成的 css font-family 统一名称
+            fontFamily: "Alibaba PuHuiTi 3.0",
+          },
+        }),
+      ],
+    },
+  }),
 });

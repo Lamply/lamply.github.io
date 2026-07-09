@@ -8,7 +8,7 @@ categories:
   - 底层本体
   - STEM
 tags:
-modified: 2026-07-04T16:48:42+08:00
+modified: 2026-07-09T21:08:38+08:00
 ---
 
 动态计算图框架，根据运行时定义计算，可以在迭代中修改计算图，最终对标量输出节点使用 `.backward()` 实现自动求导并将梯度累积保存在 `.grad` 里。比如，想要知道模型分类不够理想的地方表现在输入图像的哪些区域上，可以这样做：
@@ -549,14 +549,8 @@ for epoch in range(num_epochs):
 3. 如果要通过 model.module 之类的方法修改模型参数，那不能只限 local_rank == 0 做，不然模型参数会不同步（分布式 backward 时使用 all_reduce 算法保证各 worker 模型参数一致，其余方法需自己手动保持模型参数一致）
 4. **分布式训练多节点最好保持相同的计算结构**，也就是前向过程尽量不要使用 if-else 来定义计算图，而是使用乘 0 乘 1 来做计算路径分支 <https://zhuanlan.zhihu.com/p/592515484>
 5. 多机分布式错误：
-
-	```sh
-	AssertionError: optimizer.zero_grad() was called after loss.backward() 
-	but before optimizer.step() or optimizer.synchronize(). This is prohibited 
-	as it can cause a race condition
-	```
-
-  horovod 框架下遇到，在使用多个 optimizer 时出现，前一个 loss 的 backward 影响了后一个 optimizer，需要在后一个 optimizer 调用 `zero_grad()` 前加个 `optimizer.synchronize()`，见 <https://github.com/horovod/horovod/issues/1417>
+    - `AssertionError: optimizer.zero_grad() was called after loss.backward() but before optimizer.step() or optimizer.synchronize(). This is prohibited as it can cause a race condition`
+    - horovod 框架下遇到，在使用多个 optimizer 时出现，前一个 loss 的 backward 影响了后一个 optimizer，需要在后一个 optimizer 调用 `zero_grad()` 前加个 `optimizer.synchronize()`，见 <https://github.com/horovod/horovod/issues/1417>
 
 **参考：**
 1. <https://zhuanlan.zhihu.com/p/250471767>

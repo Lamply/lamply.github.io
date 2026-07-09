@@ -1,39 +1,55 @@
-// 极简东方字体系统：思源宋体（标题）+ 思源黑体（正文）+ JetBrains Mono（代码）
-// 字体通过 templateBuild.html 的 fonts.googleapis.cn（Google 中国镜像）加载
+@font-face {
+  font-family: 'Monaspace Neon Var';
+  /* 确保路径指向你从 variable 文件夹复制过来的 woff2 文件 */
+  src: url('../fonts/Monaspace Neon Var.woff2') format('woff2-variations'),
+       url('../fonts/Monaspace Neon Var.woff2') format('woff2'); 
+  
+  // 告诉浏览器这个字体支持 200(Light) 到 900(ExtraBold) 的字重
+  font-weight: 200 900; 
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --font-sans: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
-  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "Cambria", serif;
-  --font-mono: "JetBrains Mono", "Fira Code", "Menlo", "Consolas", monospace;
+  --font-sans: "Monaspace Neon Var", "Alibaba PuHuiTi 3.0", system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  // --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "Cambria", serif;
+  --font-mono: "Monaspace Neon Var", "JetBrains Mono", "Fira Code", "Menlo", "Consolas", "Alibaba PuHuiTi 3.0", monospace;
 
-  // 字重：暗模式下标题减一档，缓解浅色文字在深色底上的视觉压力
-  // strong 保持 700 不变，确保行内强调功能不被削弱（一般做法）
+  // 字重：暗模式下标题减一档，默认 600，缓解浅色文字在深色底上的视觉压力
   --heading-weight: 600;
 }
 
-[data-theme="dark"] {
-  --heading-weight: 500;
-}
-
+// 正文 400 字重，使用 55 Regular
 body {
   font-family: var(--font-sans);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, h5, h6,
-.vp-page-title,
-.vp-blog-hero-title {
-  font-family: var(--font-serif);
-  font-weight: var(--heading-weight);
-  letter-spacing: -0.005em;
+// 文章内加粗：使用 85 Bold (700)
+strong, b {
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
-// strong：亮模式走浏览器默认 700，暗模式减一档到 600，缓解浅色文字在深色底上的视觉膨胀
-[data-theme="dark"] strong,
-[data-theme="dark"] b {
+// 基础标题：跟随 Hope 主题的全局变量
+h1, h2, h3, .vp-page-title {
+  font-family: var(--font-sans);
+  font-weight: var(--heading-weight);
+}
+
+// 中低级标题：统一使用 75 SemiBold (600)，拉开字形层级
+h4, h5, h6 {
+  font-family: var(--font-sans);
   font-weight: 600;
+}
+
+// 博客首页超大 Hero 标题
+.vp-blog-hero-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
 
 code, pre, kbd, .vp-code {

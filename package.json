@@ -24,6 +24,7 @@
     "@vuepress/plugin-google-analytics": "2.0.0-rc.130",
     "@vuepress/plugin-slimsearch": "2.0.0-rc.130",
     "@waline/client": "^3.15.2",
+    "cn-font-split": "^7.4.3",
     "cpx2": "^8.0.2",
     "dashjs": "^4.7.4",
     "gray-matter": "^4.0.3",
@@ -31,6 +32,7 @@
     "markdownlint-cli": "^0.47.0",
     "prettier": "^3.8.4",
     "sass-embedded": "^1.100.0",
+    "vite-plugin-font": "^5.1.2",
     "vue": "^3.5.34",
     "vuepress": "2.0.0-rc.30",
     "vuepress-theme-hope": "2.0.0-rc.107"
