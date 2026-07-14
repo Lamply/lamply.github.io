@@ -1,3 +1,5 @@
+@use "./config" as *;
+
 @font-face {
   font-family: 'Monaspace Neon Var';
   /* 确保路径指向你从 variable 文件夹复制过来的 woff2 文件 */
@@ -140,27 +142,22 @@ blockquote {
 
 }
 
-
-
-
-#toc {
-  // 增加 toc 与内容区的距离
-  left: calc(100% + 15rem);
-  // top: calc(var(--navbar-height) + 5rem);
+@media (max-width: hope-config.$modern_pc) { 
+  .vp-sidebar {
+    padding-top: 0rem !important;
+    padding-left: 0rem !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+  }
 }
 
-// .vp-toc-header,
-// .vp-toc > h2:first-child,
-// .vp-toc-wrapper > h2 
-.vp-toc-header{
-  display: none !important;
-}
-
-.vp-sidebar {
-  padding-top: 0rem !important;
-  padding-left: 2rem !important;
-  padding-right: 0 !important;
-  margin-left: 0 !important;
+@media (min-width: hope-config.$modern_pc) { 
+  .vp-sidebar {
+    padding-top: 0rem !important;
+    padding-left: 2rem !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+  }
 }
 
 // Make navbar transparent by default
@@ -171,31 +168,23 @@ blockquote {
   box-shadow: none !important;
 }
 
+.vp-page {
+  @media (min-width: hope-config.$pc) {
+    padding-inline-start: calc(var(--sidebar-space)) !important;
+  }
+}
+
+#toc {
+  @media (min-width: hope-config.$pc) {
+    inset-inline-start: calc(100% + 9rem);
+  }
+
+  @media (min-width: hope-config.$modern_pc) {
+    inset-inline-start: calc(100% + 15rem);
+  }
+}
+
 // // Optional: Make it opaque on scroll
 // html:not(.transparent-navbar) .navbar {
 //   background-color: var(--vp-c-bg) !important;
 // }
-
-// Adjust the main content wrapper to allow side elements to reach edges
-.vp-page {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-// Optional: Fine-tune the overall layout container on larger screens
-@media (min-width: 1024px) {  // Adjust breakpoint as needed
-  .theme-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  
-  // Ensure sidebar hugs left
-  .vp-sidebar-wrapper {
-    padding-left: 1rem; // Small inner padding if desired; set to 0 for flush
-  }
-  
-  // Ensure TOC hugs right
-  .vp-toc-wrapper {
-    padding-right: 0; // Small inner padding if desired
-  }
-}

@@ -25,6 +25,7 @@ export default defineUserConfig({
   description: "记录理性地觉察。",
 
   theme,
+
   // 是否开启页面预拉取，如果服务器宽带足够，可改为 true，会提升其他页面加载速度
   shouldPrefetch: false,
 

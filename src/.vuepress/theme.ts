@@ -113,6 +113,14 @@ export default hopeTheme(
       },
     },
 
+    locales:{
+      "/": {
+        metaLocales: {
+          toc: " ",
+        },
+      },
+    },
+
     plugins: {
       blog: true,
 
