@@ -62,12 +62,85 @@ blockquote {
   font-style: italic;
 }
 
-// toc.scss, navbar.scss, sidebar.scss
-/*
-@import "vidstack/player/styles/default/theme.css";
-@import "vidstack/player/styles/default/layouts/audio.css";
-@import "vidstack/player/styles/default/layouts/video.css";
-*/
+// 锁定正文区域，避免污染侧边栏或目录
+[vp-content],
+.theme-hope-content {
+  /* ========================================================
+     1. 解决有序列表缩进偏左、怪异的问题
+     ======================================================== */
+  ol {
+    // 默认的左侧 padding 较小，导致双位数（如 10.）或特定字体下数字偏左甚至被遮挡。
+    // 适当增加左侧缩进值（默认通常是 1.25rem ~ 1.5rem 左右）
+    padding-left: 2.2rem; 
+    list-style-type: decimal; // 强制有序列表使用标准阿拉伯数字
+  }
+
+  ul {
+    // 同样稍微优化无序列表的缩进，使其与有序列表视觉上更协调
+    padding-left: 1.6rem;
+  }
+
+
+  /* ========================================================
+     2. 调整有序/无序列表的【行间隔】（列表项 li 之间的距离）
+     ======================================================== */
+  ol, ul {
+    li {
+      // 调整列表项的上下外边距。可以根据需要微调数值（如 0.35rem 到 0.6rem 之间）
+      margin-top: 0.4rem;
+      margin-bottom: 0.4rem;
+
+      // 如果列表项中包含段落（如 markdown 渲染出的 p 标签），统一缩减段落默认的边距
+      p {
+        margin-top: 0.2rem;
+        margin-bottom: 0.2rem;
+      }
+    }
+
+    // 防止嵌套列表（列表里的子列表）的间距无限叠加导致过大
+    ol, ul {
+      margin-top: 0.2rem;
+      margin-bottom: 0.2rem;
+
+      li {
+        margin-top: 0.2rem;
+        margin-bottom: 0.2rem;
+      }
+    }
+  }
+
+
+  /* ========================================================
+     3. 调整列表的【首行间隔】
+     (这里提供两种理解的解决方案，你可以根据实际需求使用或微调)
+     ======================================================== */
+
+  // 方案 A：如果你说的“首行间隔”是指：【整个列表】与【上方常规段落/标题】之间的外部距离
+  ol, ul {
+    margin-top: 0.5rem;    // 调整列表整体与上文的间距（让排版有呼吸感）
+    margin-bottom: 1.2rem; // 调整列表整体与下文的间距
+  }
+
+  // // 方案 B：如果你说的“首行间隔”是指：列表内部【第一个子项 li】的顶部间距
+  // ol, ul {
+  //   > li:first-child {
+  //     // 如果希望列表中第一行不要跟列表整体的 margin-top 重叠，可以单独调整
+  //     margin-top: 0.2rem; 
+  //   }
+  // }
+
+  p {
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  p:has(+ ul), p:has(+ ol) {
+    margin-bottom: 0.5rem !important; // 强制缩减列表上方段落的占位
+  }
+
+}
+
+
 
 
 #toc {

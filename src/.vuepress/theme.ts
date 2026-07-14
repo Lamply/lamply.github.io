@@ -89,7 +89,8 @@ export default hopeTheme(
       // shiki 代码高亮主题：vitesse 暖色系，与朱砂 + 宣纸/暖墨黑配色协调
       highlighter: {
         type: "shiki",
-        themes: { light: "vitesse-light", dark: "vitesse-dark" },
+        themes: { dark: "tokyo-night" },
+        lineNumbers: false,
       },
       align: true, // 启用自定义对齐
       attrs: true, // 使用特殊标记为 Markdown 元素添加属性
