@@ -34,6 +34,7 @@ body {
 strong, b {
   font-family: var(--font-sans);
   font-weight: 700;
+  color: $complete-color;
 }
 
 // 基础标题：跟随 Hope 主题的全局变量
@@ -139,7 +140,6 @@ blockquote {
   p:has(+ ul), p:has(+ ol) {
     margin-bottom: 0.5rem !important; // 强制缩减列表上方段落的占位
   }
-
 }
 
 @media (max-width: hope-config.$modern_pc) { 
