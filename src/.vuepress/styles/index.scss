@@ -140,7 +140,19 @@ blockquote {
   p:has(+ ul), p:has(+ ol) {
     margin-bottom: 0.5rem !important; // 强制缩减列表上方段落的占位
   }
+
+  img {
+    border: 8px solid var(--vp-c-border); 
+    // padding: 0.5rem;
+    background-color: var(--vp-c-bg); /* Fills the padded space with the page background color */
+    border-radius: 0px;                   
+    box-sizing: border-box;               
+
+    // Optional: Add a subtle shadow to lift the image off the page
+    // box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
 }
+
 
 @media (max-width: hope-config.$modern_pc) { 
   .vp-sidebar {
