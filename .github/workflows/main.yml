@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   LearnData-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       FTP_HOST: ${{ secrets.ftp_host }}
     steps:
