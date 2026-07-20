@@ -6,8 +6,8 @@
     <link>https://lamply.github.io/</link>
     <description>记录理性地觉察。</description>
     <language>zh-CN</language>
-    <pubDate>Tue, 14 Jul 2026 04:16:11 GMT</pubDate>
-    <lastBuildDate>Tue, 14 Jul 2026 04:16:11 GMT</lastBuildDate>
+    <pubDate>Mon, 20 Jul 2026 12:52:41 GMT</pubDate>
+    <lastBuildDate>Mon, 20 Jul 2026 12:52:41 GMT</lastBuildDate>
     <generator>@vuepress/plugin-feed</generator>
     <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
     <category>底层本体</category>
@@ -48,7 +48,7 @@
 <p>在 Pytorch 中，CUDA 内存以内存块的形式存在，在你创建一条 4 Bytes 的 Tensor 时，默认情况下，Pytorch 会向 CUDA 申请 2 MB 的内存块，然后再为我们分配 512 Bytes 的显存来储存我们申请的 Tensor。剩余的 1.5 MB 以 reserved memory（以前叫 cache memory）的形式保持占用。假设这时候，你想再申请一条 Tensor，Pytorch 首先会去看之前申请的内存块够不够放。如果我们申请的 Tensor 小于 1.5MB，那就直接放在刚刚申请的内存块中。如果大于 1.5MB，Pytorch 则再向 CUDA 申请新的内存块。假设 CUDA 也没有足够内存的时候，Pytorch 会尝试切分释放掉这些内存块中闲置的部分，再重新向 CUDA 申请。如果还不够，那就会报我们模型训练中常见的 out of memory 错误了。</p>
 </blockquote>
 <ol>
-<li><a href="https://www.zhihu.com/question/571024067/answer/2796051468" target="_blank" rel="noopener noreferrer">https://www.zhihu.com/question/571024067/answer/2796051468</a></li>
+<li><a href="https://www.zhihu.com/question/571024067/answer/2796051468" target="_blank" rel="noopener noreferrer">zhihu.com</a></li>
 </ol>
 <h2>模块</h2>
 <p>模块可以嵌套，但需要设为其属性，也就是以 <code>self.xxxx</code> 或 <code>setattr(self, name, xxx)</code> 的形式设置</p>
@@ -95,71 +95,7 @@
 <li><code>.to(device)</code>：送到指定设备（CPU/GPU）上运算，运算需在同一设备，如果不急着使用数据，可以同时对 <code>pin_memory</code> 数据设置 <code>non_blocking=True</code> 来异步传输数据，更多见 [[#^69d2e9|dataloader]]</li>
 <li><code>.data</code>：不安全，似乎是隔开反传用的，现用 <code>.detach()</code> 替代，返回内存与 Tensor 共享，和直接操操作 Tensor 似乎没什么区别</li>
 </ul>
-<p>方法记录：（函数加下划线表示 in-place 操作）</p>
-<ul>
-<li><strong>排序</strong>：<code>a.sort(axis)</code>，沿 axis 维度做排序，输出 <code>a.sort(axis)[0]</code>、<code>a.sort(axis)[1]</code> 分别代表排序后的 Tensor 和排序对应 index</li>
-<li><strong>最大值</strong>：<code>a.max(axis, keepdim)</code>，类似 <code>a.sort</code>，keepdim 为 bool 值，置为 True 则保留维度，即 <code>(96, 10) max(1, True) -&gt; (96, 1)</code></li>
-<li><strong>矩阵运算</strong>：<code>a.shape = (1,24), b.shape = (10,1), (a+b).shape = (10,24)</code>，意思是 Tensor 中垂直向量加法会扩展为矩阵，加一行加一列这样。
-<ul>
-<li>多维矩阵乘法 <code>torch.bmm(a, b)</code>，a 为 <code>(b, n, m)</code>，b 为 <code>(b, m, p)</code>，输出 <code>(b, n, p)</code>，这里 b 是批次，n 不清楚，似乎随意？</li>
-</ul>
-</li>
-<li><strong>reshape</strong>：<code>a.view(-1, 2)</code> / <code>a.reshape(-1, 2)</code>，都是改变形状，<code>Tensor.reshape()</code> 会在内存不连续时调用 <code>Tensor.contiguous()</code> 以返回一份 copy 再调用 <code>Tensor.view()</code></li>
-<li><strong>扩增</strong>：
-<ul>
-<li><code>a.expand(3, -1)</code>，将 a <code>(n, )</code> 复制扩展成 <code>(3, n)</code></li>
-<li><code>torch.repeat_interleave(a, 2, dim=0)</code>，沿 0 维重复元素 2 次，如 <code>[0,1,2] =&gt; [0,0,1,1,2,2]</code>，在 CUDA 上扩增多个维度没有 <code>torch.nn.functional.interpolate(a, scale_factor=2, mode='nearest')</code> 快</li>
-</ul>
-</li>
-<li><strong>堆叠/展开</strong>： ^e3b3d9
-<ul>
-<li><code>torch.nn.Unfold(kernel_size, dilation=1, padding=0, stride=1)</code>：相当于卷积的前置操作。Tensor 也有类似算子，不过只能是一维的。返回 <code>[N, C x ks^2, -1]</code> 的 Tensor，如果 ks 和 stride 相同则相当于图像切片展开，可以转换为这样 <code>[N, C, ks_h, ks_w, patch_h, patch_w]</code></li>
-</ul>
-</li>
-<li><strong>填充</strong>：
-<ul>
-<li><code>F.pad(x, [1,2,3,4])</code>：padding 算子，第二个参数类似 copyMakeBorder，也就是对应 <code>[left, right, top, bottom, first_c, last_c]</code>，可以缺省</li>
-</ul>
-</li>
-<li><strong>仿射</strong>：通过 <code>F.affine_grid(theta, size)</code> 和 <code>F.grid_sample(img, grid)</code> 来实现仿射变换，但和通常的实现方法的有所不同
-<ul>
-<li>PyTorch 会在处理前将输入输出坐标系缩放到 [-1, 1]，零点为图像中心点。由于输出范围固定为 [-1, 1]，所以输出的大小 <code>size</code> 代表的是输出网格的分辨率而非 OpenCV 的从输出空间中截取的区域大小 <code>dsize</code></li>
-<li>假设  和  分别为 输入空间 和 输出归一化空间
-<ul>
-<li>OpenCV 的 warp_affine 方法为：-&gt;，仿射矩阵为 <code>M</code>，处理过程就是输入一个  变换得到对应的 </li>
-<li>PyTorch 会先用 <code>F.affine_grid()</code> 输入 <code>size</code> 大小的输出空间网格 ，输出一张含有输入归一化坐标  的输出网格 <code>grid</code> ，表示输出网格的像素对应于输入归一化空间的哪个坐标，也就是 -&gt;<em>（由于归一化在内部自动完成，所以实际的处理矩阵 <code>theta</code> 为 -&gt; 的变换矩阵，也就是将 <code>M</code> 变换到输出归一化空间且后再取逆）</em>。最后在经过 <code>F.grid_sample()</code> 从输入归一化空间中采样出像素映射到输出网格中。处理过程为：输入一个 ，内部归一化得到 ，变换得到 ，采样得到  值</li>
-</ul>
-</li>
-<li>详细推导参照 <a href="https://www.zhihu.com/question/294673086" target="_blank" rel="noopener noreferrer">https://www.zhihu.com/question/294673086</a></li>
-</ul>
-</li>
-</ul>
-<div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#BB9AF7">def</span><span style="--shiki-dark:#7AA2F7"> affine2theta</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#E0AF68">warp_mat</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> in_size</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> out_size</span><span style="--shiki-dark:#9ABDF5">):</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    W1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> in_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    H1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> in_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    W2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    H2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_wh_2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">array</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#C0CAF5">W2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> -</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#C0CAF5">H2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> -</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">]</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">reshape</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_wh_1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">array</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#C0CAF5">W1</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> W1</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> H1</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> H1</span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">]</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">reshape</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_mat_r </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">insert</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">warp_mat</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> [</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">],</span><span style="--shiki-dark:#89DDFF"> [</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">],</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    aff_theta </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">from_numpy</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">linalg</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">inv</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">warp_wh_2 </span><span style="--shiki-dark:#89DDFF">@</span><span style="--shiki-dark:#C0CAF5"> warp_mat_r </span><span style="--shiki-dark:#89DDFF">@</span><span style="--shiki-dark:#C0CAF5"> warp_wh_1</span><span style="--shiki-dark:#9ABDF5">))</span><span style="--shiki-dark:#89DDFF">[:</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">].</span><span style="--shiki-dark:#7AA2F7">unsqueeze</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">type</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">float32</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#BB9AF7">    return</span><span style="--shiki-dark:#A9B1D6"> aff_theta </span></span>
-<span class="line"></span>
-<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># src (1xCxHxW)  out_size (4)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">W1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#89DDFF">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">H1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">W2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">H2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
-<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># keep resolution when shinking</span></span>
-<span class="line"><span style="--shiki-dark:#BB9AF7">if</span><span style="--shiki-dark:#A9B1D6"> W1 </span><span style="--shiki-dark:#BB9AF7">></span><span style="--shiki-dark:#A9B1D6"> W2 </span><span style="--shiki-dark:#BB9AF7">and</span><span style="--shiki-dark:#A9B1D6"> H1 </span><span style="--shiki-dark:#BB9AF7">></span><span style="--shiki-dark:#A9B1D6"> H2</span><span style="--shiki-dark:#89DDFF">:</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">    out_size </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span></span>
-<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># aff_theta (1x2x3)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">aff_theta </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#7AA2F7"> affine2theta</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">M</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> out_size</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># grid (1xHxWx2)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">grid </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">nn</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">functional</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">affine_grid</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">aff_theta</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cuda</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> out_size</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">dst </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">nn</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">functional</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">grid_sample</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cuda</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> grid</span><span style="--shiki-dark:#9ABDF5">)</span></span>
-<span class="line"><span style="--shiki-dark:#A9B1D6">dst </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> dst</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#89DDFF">:,:,:</span><span style="--shiki-dark:#A9B1D6">H2</span><span style="--shiki-dark:#89DDFF">,:</span><span style="--shiki-dark:#A9B1D6">W2</span><span style="--shiki-dark:#9ABDF5">]</span></span></code></pre>
-</div><p>在使用 CUDA 时，需要对各个参数和缓冲区转成 CUDA 张量 <code>net.to(device)</code> 和 <code>inputs, labels = inputs.to(device), labels.to(device)</code>，其中 <code>device = torch.device(&quot;cuda:0&quot; if torch.cuda.is_available() else &quot;cpu&quot;)</code>。另外，使用 <code>.cuda()</code> 也可以达到同样的效果而且速度会快些</p>
+<p>在使用 CUDA 时，需要对各个参数和缓冲区转成 CUDA 张量 <code>net.to(device)</code> 和 <code>inputs, labels = inputs.to(device), labels.to(device)</code>，其中 <code>device = torch.device(&quot;cuda:0&quot; if torch.cuda.is_available() else &quot;cpu&quot;)</code>。另外，使用 <code>.cuda()</code> 也可以达到同样的效果而且速度会快些</p>
 <h3>Variable</h3>
 <p>类似 Tensor，已 deprecated</p>
 <ul>
@@ -210,21 +146,21 @@
 <ul>
 <li><code>pin_memory=False</code>：是否使用锁页内存（锁页就是锁定内存页，不让其用于磁盘交换，比如 GPU 显存就无法交换到磁盘，但 CPU 用虚拟内存会可能和磁盘交换）。该标志会将数据加载到锁页内存，从而接下来不需要 CPU 参与就能传输数据到 GPU（GPU 的 DMA 直接从锁页内存拿数据），坏处是可能会出现问题，看系统是否卡住或者 swap 有没爆来决定开不开，而且非锁页内存数据传到锁页内存也需要时间。配合 <code>Tensor.cuda(non_blocking=True)</code> 可以实现异步传输，更多见：
 <ul>
-<li><a href="https://discuss.pytorch.org/t/should-we-set-non-blocking-to-true/38234/3?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/should-we-set-non-blocking-to-true/38234/3?u=lamply</a></li>
-<li><a href="https://discuss.pytorch.org/t/guidelines-for-assigning-num-workers-to-dataloader/813/15?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/guidelines-for-assigning-num-workers-to-dataloader/813/15?u=lamply</a></li>
+<li><a href="https://discuss.pytorch.org/t/should-we-set-non-blocking-to-true/38234/3?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
+<li><a href="https://discuss.pytorch.org/t/guidelines-for-assigning-num-workers-to-dataloader/813/15?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
 <li>[[操作系统内存管理-202201171131]]</li>
 <li><em>（不过实际在远程机上尝试发现速度完全没有加快，这可能是因为瓶颈并不在这方面上，而且使用锁页内存也会导致各种其他系统问题导致延迟）</em></li>
 <li><em>似乎是要配合 non_blocking 进行 CPU-&gt;GPU 才会有加速，二者缺一不可，毕竟非 pin_memory 的话传数据还是要占用 CPU I/O，相当于 blocking 了</em></li>
 </ul>
 </li>
 <li><code>num_worker</code>：dataloader 创建的工作进程数，并使用 <code>batch_sampler</code> 指定 batch 和 worker，然后各个 worker 将各自 batch 加载进 RAM，最后 dataloader 从 RAM 中寻找需要的 batch。设置越大，batch 预备得越多，内存和 CPU 消耗也大，设置为 0 则不会自动加载到 RAM，一般设置为 CPU 核心数，但如果核心很多对共享内存要求会很高（<em>而且速度还不一定会更快，尝试过 [64 bs, 32 worker]，[32 bs, 32 worker]，[32 bs, 16 worker]，[16 bs, 16 worker]，[8 bs, 8 worker] ，[8 bs, 4worker]，batchsize 非瓶颈（但和 worker 匹配会更快），10 核服务器 cpu，worker 为 16 或 8 时最快</em>）
-更多请参考 <a href="https://www.cnblogs.com/hesse-summer/p/11343870.html" target="_blank" rel="noopener noreferrer">https://www.cnblogs.com/hesse-summer/p/11343870.html</a></li>
+更多请参考 <a href="https://www.cnblogs.com/hesse-summer/p/11343870.html" target="_blank" rel="noopener noreferrer">cnblogs.com</a></li>
 </ul>
 <p>如果想要更快的训练速度，需要明确瓶颈所在，CPU、GPU、I/O，大的 batch size 一般会被 I/O 限制，复杂的 augmentation 以及编解码会被 CPU 限制。</p>
 <ul>
 <li>对于 I/O，如果不是十分频繁读写而且很大的批次（128 以上），一般不会成为瓶颈，使用 <code>lmdb</code> / <code>tfrecord</code> 会有帮助，此外还有一些非阻塞 I/O 如 <code>tf.io.gfile.GFile(img_path, 'wb')</code> 可以改善</li>
 <li>对于 CPU，迁移预处理操作到 GPU 上（<code>DALI</code>），或事先做好部分预处理，加上 <code>PyTurboJPEG</code> 等加速编解码，以及给 <code>Dataloader</code> 加上 fast_collate 和套层 prefetcher</li>
-<li>更多见： <a href="https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/18?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/18?u=lamply</a></li>
+<li>更多见： <a href="https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/18?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
 </ul>
 <h3>loss 函数</h3>
 <p>定义在 torch.nn 或 torch.nn.functional 里。需要注意这里的 loss 函数和 Tensorflow 的 loss 函数很有可能默认参数、输入顺序和实现细节是不同的，总之 <strong>如果要跨框架复现，在使用之前一定要对数值进行检查！</strong></p>
@@ -238,7 +174,7 @@
 </li>
 <li><code>torch.nn.BCELoss</code>：二值交叉熵，需要事先做 <code>sigmoid</code>，除非用 <code>BCEWithLogitsLoss</code>
 <ul>
-<li><code>BCEWithLogitsLoss</code> 和 <code>CrossEntropyLoss</code> 区别在于前者可以软标签（0.0-1.0），后者是硬标签（整型 0-C-1），更多见 <a href="https://discuss.pytorch.org/t/loss-function-crossentropyloss-vs-bcewithlogitsloss/16089/4?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/loss-function-crossentropyloss-vs-bcewithlogitsloss/16089/4?u=lamply</a></li>
+<li><code>BCEWithLogitsLoss</code> 和 <code>CrossEntropyLoss</code> 区别在于前者可以软标签（0.0-1.0），后者是硬标签（整型 0-C-1），更多见 <a href="https://discuss.pytorch.org/t/loss-function-crossentropyloss-vs-bcewithlogitsloss/16089/4?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
 </ul>
 </li>
 </ul>
@@ -257,14 +193,113 @@
 <span class="line"><span>end = timer()</span></span></code></pre>
 </div><p><code>torch.backends.cudnn.benchmark</code>：设置 True 使 cudnn 寻找当前尺寸网络的最佳运行算法，详见参靠资料</p>
 <p>参考资料：
-<a href="https://pytorch.org/docs/1.7.1/notes/cuda.html#cuda-semantics" target="_blank" rel="noopener noreferrer">https://pytorch.org/docs/1.7.1/notes/cuda.html#cuda-semantics</a>
-<a href="https://zhuanlan.zhihu.com/p/73711222" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/73711222</a></p>
+<a href="https://pytorch.org/docs/1.7.1/notes/cuda.html#cuda-semantics" target="_blank" rel="noopener noreferrer">pytorch.org</a>
+<a href="https://zhuanlan.zhihu.com/p/73711222" target="_blank" rel="noopener noreferrer">zhuanlan.zhihu.com</a></p>
 <h2>方法</h2>
-<h3>数组操作</h3>
+<p>函数加下划线表示 in-place 操作。</p>
+<h3>排序</h3>
+<p><code>a.sort(axis)</code>，沿 axis 维度做排序，输出 <code>a.sort(axis)[0]</code>、<code>a.sort(axis)[1]</code> 分别代表排序后的 Tensor 和排序对应 index</p>
+<h3>最大值</h3>
+<p><code>a.max(axis, keepdim)</code>，类似 <code>a.sort</code>，keepdim 为 bool 值，置为 True 则保留维度，即 <code>(96, 10) max(1, True) -&gt; (96, 1)</code></p>
+<h3>矩阵运算</h3>
+<p><code>a.shape = (1,24), b.shape = (10,1), (a+b).shape = (10,24)</code>，意思是 Tensor 中垂直向量加法会扩展为矩阵，加一行加一列这样。</p>
+<p>多维矩阵乘法 <code>torch.bmm(a, b)</code>，a 为 <code>(b, n, m)</code>，b 为 <code>(b, m, p)</code>，输出 <code>(b, n, p)</code>，这里 b 是批次，n 不清楚，似乎随意？</p>
+<h3>reshape</h3>
+<p><code>a.view(-1, 2)</code> / <code>a.reshape(-1, 2)</code>，都是改变形状，<code>Tensor.reshape()</code> 会在内存不连续时调用 <code>Tensor.contiguous()</code> 以返回一份 copy 再调用 <code>Tensor.view()</code>。</p>
+<h3>扩增</h3>
 <ul>
-<li>扩维：<code>.unsqueeze(axis)</code></li>
+<li><code>a.expand(3, -1)</code>：将 a <code>(n, )</code> 复制扩展成 <code>(3, n)</code>。</li>
+<li><code>a.unsqueeze(1)</code>：将 a <code>(n, m)</code> 增维成 <code>(n, 1, m)</code>。</li>
+<li><code>torch.repeat_interleave(a, 2, dim=0)</code>，沿 0 维重复元素 2 次，如 <code>[0,1,2] =&gt; [0,0,1,1,2,2]</code>，在 CUDA 上扩增多个维度没有 <code>torch.nn.functional.interpolate(a, scale_factor=2, mode='nearest')</code> 快。</li>
 </ul>
-<h3>参数设置</h3>
+<h3>堆叠/展开</h3>
+<p><code>torch.nn.Unfold(kernel_size, dilation=1, padding=0, stride=1)</code>：相当于卷积的前置操作，Tensor 也有类似算子，不过只能是一维的。</p>
+<p>返回 <code>[N, C x ks^2, -1]</code> 的 Tensor，如果 ks 和 stride 相同则相当于图像切片展开，可以转换为这样 <code>[N, C, ks_h, ks_w, patch_h, patch_w]</code>。</p>
+<h3>填充</h3>
+<p><code>F.pad(x, [1,2,3,4])</code>：padding 算子，第二个参数类似 copyMakeBorder，也就是对应 <code>[left, right, top, bottom, first_c, last_c]</code>，可以缺省。</p>
+<h3>仿射</h3>
+<p>通过 <code>F.affine_grid(theta, size)</code> 和 <code>F.grid_sample(img, grid)</code> 来实现仿射变换，但和通常的实现方法的有所不同。</p>
+<p>PyTorch 会在处理前将输入输出坐标系缩放到 [-1, 1]，零点为图像中心点。由于输出范围固定为 [-1, 1]，所以输出的大小 <code>size</code> 代表的是输出网格的分辨率而非 OpenCV 的从输出空间中截取的区域大小 <code>dsize</code>。</p>
+<p>假设  和  分别为 输入空间 和 输出归一化空间。</p>
+<p>OpenCV 的 warp_affine 方法为：-&gt;，仿射矩阵为 <code>M</code>，处理过程就是输入一个  变换得到对应的 。</p>
+<p>PyTorch 会先用 <code>F.affine_grid()</code> 输入 <code>size</code> 大小的输出空间网格 ，输出一张含有输入归一化坐标  的输出网格 <code>grid</code> ，表示输出网格的像素对应于输入归一化空间的哪个坐标，也就是 -&gt;<em>（由于归一化在内部自动完成，所以实际的处理矩阵 <code>theta</code> 为 -&gt; 的变换矩阵，也就是将 <code>M</code> 变换到输出归一化空间且后再取逆）</em>。</p>
+<p>最后在经过 <code>F.grid_sample()</code> 从输入归一化空间中采样出像素映射到输出网格中。处理过程为：输入一个 ，内部归一化得到 ，变换得到 ，采样得到  值。</p>
+<p>改成类似 OpenCV warpAffine 的实现代码如下：</p>
+<div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#BB9AF7">def</span><span style="--shiki-dark:#7AA2F7"> affine2theta</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#E0AF68">warp_mat</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> in_size</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> out_size</span><span style="--shiki-dark:#9ABDF5">):</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    bs </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> warp_mat</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">shape</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    W1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> in_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    H1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> in_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    W2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    H2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_wh_2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#89DDFF"> (</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">array</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF"> /</span><span style="--shiki-dark:#C0CAF5"> W2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> -</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF"> /</span><span style="--shiki-dark:#C0CAF5"> H2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> -</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">]</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">        .</span><span style="--shiki-dark:#7AA2F7">reshape</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">        .</span><span style="--shiki-dark:#7AA2F7">repeat</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">bs</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">    )</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_wh_1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#89DDFF"> (</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">array</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#C0CAF5">W1 </span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> W1 </span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> H1 </span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> H1 </span><span style="--shiki-dark:#89DDFF">/</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">]</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">        .</span><span style="--shiki-dark:#7AA2F7">reshape</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">        .</span><span style="--shiki-dark:#7AA2F7">repeat</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">bs</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">    )</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    warp_mat_r </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">insert</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">warp_mat</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> [</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">],</span><span style="--shiki-dark:#89DDFF"> [</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">],</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">1</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    aff_theta </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">from_numpy</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">linalg</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">pinv</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">warp_wh_2 </span><span style="--shiki-dark:#89DDFF">@</span><span style="--shiki-dark:#C0CAF5"> warp_mat_r </span><span style="--shiki-dark:#89DDFF">@</span><span style="--shiki-dark:#C0CAF5"> warp_wh_1</span><span style="--shiki-dark:#9ABDF5">))</span><span style="--shiki-dark:#89DDFF">[</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">        :,</span><span style="--shiki-dark:#89DDFF"> :</span><span style="--shiki-dark:#FF9E64">2</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">    ].</span><span style="--shiki-dark:#7AA2F7">type</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">float32</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">    return</span><span style="--shiki-dark:#A9B1D6"> aff_theta</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">def</span><span style="--shiki-dark:#7AA2F7"> warpAffine</span><span style="--shiki-dark:#9ABDF5">(</span></span>
+<span class="line"><span style="--shiki-dark:#E0AF68">    src</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> M</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> out_size</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> interp_mode</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#9ECE6A">bilinear</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> align_corners</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">True</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> padding_mode</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#9ECE6A">zeros</span><span style="--shiki-dark:#89DDFF">"</span></span>
+<span class="line"><span style="--shiki-dark:#9ABDF5">):</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    """Applies an affine transformation to an image.</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    Notice:</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        - Unlike OpenCV, resolution and H/W ratio is affected by out_size</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        - Only tested in keeping H/W ratio warp affine</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    Args:</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        src(Tensor):           (NxCxHxW) input image</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        M(array):              (2x3) or (Nx2x3) OpenCV affine transform matrix</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        out_size(Tensor):      (4) Tensor size</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    Outs:</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        dst(Tensor)</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    """</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    M </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> M </span><span style="--shiki-dark:#BB9AF7">if</span><span style="--shiki-dark:#0DB9D7"> len</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">M</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">shape</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#BB9AF7"> ==</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#BB9AF7"> else</span><span style="--shiki-dark:#A9B1D6"> M</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#A9B1D6">np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">newaxis</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> :</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">repeat</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">shape</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    W1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#89DDFF">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    H1 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#89DDFF">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    W2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">    H2 </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    # keep resolution when shinking</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">    if</span><span style="--shiki-dark:#A9B1D6"> W1 </span><span style="--shiki-dark:#BB9AF7">></span><span style="--shiki-dark:#A9B1D6"> W2 </span><span style="--shiki-dark:#BB9AF7">and</span><span style="--shiki-dark:#A9B1D6"> H1 </span><span style="--shiki-dark:#BB9AF7">></span><span style="--shiki-dark:#A9B1D6"> H2</span><span style="--shiki-dark:#89DDFF">:</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        out_size </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">    # deterministic algorithms supported</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">    if</span><span style="--shiki-dark:#A9B1D6"> os</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">environ</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">get</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#9ECE6A">DETERMINISTIC_TEST</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#BB9AF7"> ==</span><span style="--shiki-dark:#89DDFF"> "</span><span style="--shiki-dark:#9ECE6A">True</span><span style="--shiki-dark:#89DDFF">"</span><span style="--shiki-dark:#89DDFF">:</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        imgs </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">detach</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cpu</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">numpy</span><span style="--shiki-dark:#9ABDF5">()</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        imgs_t </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> imgs</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">transpose</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        dst_img </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#89DDFF"> []</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">        for</span><span style="--shiki-dark:#A9B1D6"> i </span><span style="--shiki-dark:#BB9AF7">in</span><span style="--shiki-dark:#0DB9D7"> range</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">M</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">shape</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">])</span><span style="--shiki-dark:#89DDFF">:</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">            tmp_img </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> cv2</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">warpAffine</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">imgs_t</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#C0CAF5">i</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> M</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#C0CAF5">i</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> (</span><span style="--shiki-dark:#C0CAF5">out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">3</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> out_size</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#FF9E64">2</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">)</span><span style="--shiki-dark:#9ABDF5">)</span><span style="--shiki-dark:#89DDFF">[</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">                np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">newaxis</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> ...</span></span>
+<span class="line"><span style="--shiki-dark:#89DDFF">            ]</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">            dst_img</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">append</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">tmp_img</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">transpose</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 3</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 1</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#FF9E64"> 2</span><span style="--shiki-dark:#9ABDF5">))</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        dst </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">from_numpy</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">np</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">concatenate</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">dst_img</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> axis</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">0</span><span style="--shiki-dark:#9ABDF5">))</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cuda</span><span style="--shiki-dark:#9ABDF5">()</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">    else</span><span style="--shiki-dark:#89DDFF">:</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        # aff_theta (Nx2x3)</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        aff_theta </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#7AA2F7"> affine2theta</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">M</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">size</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> out_size</span><span style="--shiki-dark:#9ABDF5">)</span></span>
+<span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic">        # grid (NxHxWx2)</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        grid </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">nn</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">functional</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">affine_grid</span><span style="--shiki-dark:#9ABDF5">(</span></span>
+<span class="line"><span style="--shiki-dark:#C0CAF5">            aff_theta</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cuda</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> out_size</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> align_corners</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#C0CAF5">align_corners</span></span>
+<span class="line"><span style="--shiki-dark:#9ABDF5">        )</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        dst </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">nn</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">functional</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">grid_sample</span><span style="--shiki-dark:#9ABDF5">(</span></span>
+<span class="line"><span style="--shiki-dark:#C0CAF5">            src</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">cuda</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-dark:#C0CAF5">            grid</span><span style="--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-dark:#E0AF68">            mode</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#C0CAF5">interp_mode</span><span style="--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-dark:#E0AF68">            align_corners</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#C0CAF5">align_corners</span><span style="--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-dark:#E0AF68">            padding_mode</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#C0CAF5">padding_mode</span><span style="--shiki-dark:#89DDFF">,</span></span>
+<span class="line"><span style="--shiki-dark:#9ABDF5">        )</span></span>
+<span class="line"><span style="--shiki-dark:#A9B1D6">        dst </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> dst</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#89DDFF">:,</span><span style="--shiki-dark:#89DDFF"> :,</span><span style="--shiki-dark:#89DDFF"> :</span><span style="--shiki-dark:#A9B1D6">H2</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> :</span><span style="--shiki-dark:#A9B1D6">W2</span><span style="--shiki-dark:#9ABDF5">]</span></span>
+<span class="line"><span style="--shiki-dark:#BB9AF7">    return</span><span style="--shiki-dark:#A9B1D6"> dst</span></span></code></pre>
+</div><h3>参数设置</h3>
 <p>需要反传的参数需要用 <code>nn.Parameter(data=x)</code> 来加到 <code>nn.Module</code> 的变量里，如：</p>
 <div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#BB9AF7">class</span><span style="--shiki-dark:#C0CAF5"> SmoothOneHot</span><span style="--shiki-dark:#89DDFF">(</span><span style="--shiki-dark:#BB9AF7">nn</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#BB9AF7">Module</span><span style="--shiki-dark:#89DDFF">)</span><span style="--shiki-dark:#9ABDF5">:</span></span>
 <span class="line"><span style="--shiki-dark:#BB9AF7">    def</span><span style="--shiki-dark:#0DB9D7"> __init__</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#E0AF68">self</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> classes</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> target</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">None</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> smooth_val</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">None</span><span style="--shiki-dark:#9ABDF5">):</span></span>
@@ -341,7 +376,7 @@ Dataset 结构如下：</p>
 <span class="line"><span style="--shiki-dark:#A9B1D6">    x </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> Image</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">open</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">io</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">BytesIO</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">data</span><span style="--shiki-dark:#9ABDF5">[</span><span style="--shiki-dark:#89DDFF">'</span><span style="--shiki-dark:#9ECE6A">image_raw</span><span style="--shiki-dark:#89DDFF">'</span><span style="--shiki-dark:#9ABDF5">]</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">numpy</span><span style="--shiki-dark:#9ABDF5">()))</span></span>
 <span class="line"><span style="--shiki-dark:#A9B1D6">    y </span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#A9B1D6"> transforms</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">Compose</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#89DDFF">[</span><span style="--shiki-dark:#C0CAF5">transforms</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">ToTensor</span><span style="--shiki-dark:#9ABDF5">()</span><span style="--shiki-dark:#89DDFF">]</span><span style="--shiki-dark:#9ABDF5">)(</span><span style="--shiki-dark:#C0CAF5">x</span><span style="--shiki-dark:#9ABDF5">)</span></span></code></pre>
 </div><p>分布式下的表现见下文 [[#多卡 分布式训练]]</p>
-<p>更多见：<a href="https://ptorch.com/news/215.html" target="_blank" rel="noopener noreferrer">https://ptorch.com/news/215.html</a></p>
+<p>更多见：<a href="https://ptorch.com/news/215.html" target="_blank" rel="noopener noreferrer">ptorch.com</a></p>
 <h3>预处理</h3>
 <p>OpenCV 解码 <code>.jpg</code> 比 PIL 快一些，解码 <code>.png</code> 比 PIL 稍慢一些，两种库解码出来的 JPEG 图会有一些差异</p>
 <div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># 也可以用 albumentations，功能更强大，但多少有些坑</span></span>
@@ -361,7 +396,10 @@ Dataset 结构如下：</p>
 <span class="line"><span style="--shiki-dark:#A9B1D6">    </span></span>
 <span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># 3. 用 numpy 预处理，最后转成 Tensor</span></span>
 <span class="line"><span style="--shiki-dark:#A9B1D6">torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">from_array</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">a</span><span style="--shiki-dark:#9ABDF5">)</span></span></code></pre>
-</div><p><strong><code>transforms.ToTensor()</code> 会将整型数除上 255 来转成浮点，而如果本身是浮点则直接转成 tensor。最后这个要放在 transforms lists 的图像处理之后归一化之前</strong></p>
+</div><div class="hint-container info">
+<p class="hint-container-title">相关信息</p>
+<p><code>transforms.ToTensor()</code> 会将整型数除上 255 来转成浮点，而如果本身是浮点则直接转成 tensor。最后这个要放在 transforms lists 的图像处理之后、归一化之前。</p>
+</div>
 <h3>训练</h3>
 <p>简易的训练过程</p>
 <div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#7DCFFF">import</span><span style="--shiki-dark:#A9B1D6"> torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">optim </span><span style="--shiki-dark:#7DCFFF">as</span><span style="--shiki-dark:#A9B1D6"> optim</span></span>
@@ -498,34 +536,32 @@ Dataset 结构如下：</p>
 <span class="line"><span style="--shiki-dark:#A9B1D6">            torch</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">save</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">checkpoint_amp</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#C0CAF5"> os</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#C0CAF5">path</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">join</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">save_dir</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#89DDFF"> '</span><span style="--shiki-dark:#9ECE6A">latest_checkpoint.pt</span><span style="--shiki-dark:#89DDFF">'</span><span style="--shiki-dark:#9ABDF5">))</span></span>
 <span class="line"><span style="--shiki-dark:#A9B1D6">            model</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#A9B1D6">module</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">save</span><span style="--shiki-dark:#9ABDF5">(</span><span style="--shiki-dark:#C0CAF5">epoch</span><span style="--shiki-dark:#89DDFF">,</span><span style="--shiki-dark:#E0AF68"> save_latest</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#FF9E64">True</span><span style="--shiki-dark:#9ABDF5">)</span></span></code></pre>
 </div><p>推荐使用 Pytorch 自带的分布式训练脚本来启动训练，这样会自动创建相关进程、设置环境变量以及传入 <code>local_rank</code> 参数来指代本地机器的 id</p>
-<pre><code>CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node=2 train.py
-</code></pre>
-<p><code>CUDA_VISIBLE_DEVICES</code> 变量可以限制实际只能看到的 GPU0 和 GPU1，如果是只用 CPU 则设为 -1</p>
-<p>工业级的标准实践请参照这个：<a href="https://github.com/NVIDIA/apex/tree/master/examples/imagenet" target="_blank" rel="noopener noreferrer">https://github.com/NVIDIA/apex/tree/master/examples/imagenet</a> （原生 pytorch 版： <a href="https://github.com/pytorch/examples/tree/master/imagenet" target="_blank" rel="noopener noreferrer">https://github.com/pytorch/examples/tree/master/imagenet</a> ）</p>
+<div class="language-sh" data-highlighter="shiki" data-ext="sh" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-sh"><span class="line"><span style="--shiki-dark:#C0CAF5">CUDA_VISIBLE_DEVICES</span><span style="--shiki-dark:#89DDFF">=</span><span style="--shiki-dark:#9ECE6A">0,1</span><span style="--shiki-dark:#C0CAF5"> torchrun</span><span style="--shiki-dark:#E0AF68"> --nproc_per_node=2</span><span style="--shiki-dark:#9ECE6A"> train.py</span></span></code></pre>
+</div><p><code>CUDA_VISIBLE_DEVICES</code> 变量可以限制实际只能看到的 GPU0 和 GPU1，如果是只用 CPU 则设为 -1</p>
+<p>工业级的标准实践请参照这个：<a href="https://github.com/NVIDIA/apex/tree/master/examples/imagenet" target="_blank" rel="noopener noreferrer">github.com</a> （原生 pytorch 版： <a href="https://github.com/pytorch/examples/tree/master/imagenet" target="_blank" rel="noopener noreferrer">github.com</a> ）</p>
 <p><strong>注意：</strong></p>
 <ol>
 <li>如果是多机分布式训练的话，每个机器（Note）都会持有持有自己的 <code>local_rank</code> （对应进程），也就是会出现多个 <code>local_rank == 0</code> 的情况，这时候要用 <code>torch.distributed.get_rank()</code> 之类的方法拿到全局的 rank</li>
 <li>DataParallel 的 batch size 是总的 batch size，各 GPU 会获得其中一份，而 DataDistributedParallel 的 batch size 是各 GPU 的 batch size</li>
 <li>如果要通过 model.module 之类的方法修改模型参数，那不能只限 local_rank == 0 做，不然模型参数会不同步（分布式 backward 时使用 all_reduce 算法保证各 worker 模型参数一致，其余方法需自己手动保持模型参数一致）</li>
-<li><strong>分布式训练多节点最好保持相同的计算结构</strong>，也就是前向过程尽量不要使用 if-else 来定义计算图，而是使用乘 0 乘 1 来做计算路径分支 <a href="https://zhuanlan.zhihu.com/p/592515484" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/592515484</a></li>
+<li><strong>分布式训练多节点最好保持相同的计算结构</strong>，也就是前向过程尽量不要使用 if-else 来定义计算图，而是使用乘 0 乘 1 来做计算路径分支 <a href="https://zhuanlan.zhihu.com/p/592515484" target="_blank" rel="noopener noreferrer">zhuanlan.zhihu.com</a></li>
 <li>多机分布式错误：
 <ul>
 <li><code>AssertionError: optimizer.zero_grad() was called after loss.backward() but before optimizer.step() or optimizer.synchronize(). This is prohibited as it can cause a race condition</code></li>
-<li>horovod 框架下遇到，在使用多个 optimizer 时出现，前一个 loss 的 backward 影响了后一个 optimizer，需要在后一个 optimizer 调用 <code>zero_grad()</code> 前加个 <code>optimizer.synchronize()</code>，见 <a href="https://github.com/horovod/horovod/issues/1417" target="_blank" rel="noopener noreferrer">https://github.com/horovod/horovod/issues/1417</a></li>
+<li>horovod 框架下遇到，在使用多个 optimizer 时出现，前一个 loss 的 backward 影响了后一个 optimizer，需要在后一个 optimizer 调用 <code>zero_grad()</code> 前加个 <code>optimizer.synchronize()</code>，见 <a href="https://github.com/horovod/horovod/issues/1417" target="_blank" rel="noopener noreferrer">github.com</a></li>
 </ul>
 </li>
 </ol>
 <p><strong>参考：</strong></p>
 <ol>
-<li><a href="https://zhuanlan.zhihu.com/p/250471767" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/250471767</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/98535650" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/98535650</a></li>
-<li><a href="https://pytorch.org/docs/master/notes/amp_examples.html" target="_blank" rel="noopener noreferrer">https://pytorch.org/docs/master/notes/amp_examples.html</a></li>
-<li><a href="https://gist.github.com/mcarilli/213a4e698e4a0ae2234ddee56f4f3f95" target="_blank" rel="noopener noreferrer">https://gist.github.com/mcarilli/213a4e698e4a0ae2234ddee56f4f3f95</a></li>
-<li><a href="https://discuss.pytorch.org/t/torch-cuda-amp-equivalent-of-apex-amp-initialize/132598/5?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/torch-cuda-amp-equivalent-of-apex-amp-initialize/132598/5?u=lamply</a></li>
-<li><a href="https://pytorch.org/docs/stable/notes/amp_examples.html" target="_blank" rel="noopener noreferrer">https://pytorch.org/docs/stable/notes/amp_examples.html</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/250471767" target="_blank" rel="noopener noreferrer">zhuanlan.zhihu.com</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/98535650" target="_blank" rel="noopener noreferrer">zhuanlan.zhihu.com</a></li>
+<li><a href="https://pytorch.org/docs/master/notes/amp_examples.html" target="_blank" rel="noopener noreferrer">pytorch.org</a></li>
+<li><a href="https://gist.github.com/mcarilli/213a4e698e4a0ae2234ddee56f4f3f95" target="_blank" rel="noopener noreferrer">gist.github.com</a></li>
+<li><a href="https://discuss.pytorch.org/t/torch-cuda-amp-equivalent-of-apex-amp-initialize/132598/5?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
+<li><a href="https://pytorch.org/docs/stable/notes/amp_examples.html" target="_blank" rel="noopener noreferrer">pytorch.org</a></li>
 </ol>
-<h4>DLC</h4>
-<p>Horovod 实现</p>
+<h4>Horovod</h4>
 <div class="language-python" data-highlighter="shiki" data-ext="python" style="--shiki-dark:#a9b1d6;--shiki-dark-bg:#1a1b26"><pre class="shiki shiki-themes tokyo-night vp-code"><code class="language-python"><span class="line"><span style="--shiki-dark:#51597D;--shiki-dark-font-style:italic"># 先初始化</span></span>
 <span class="line"><span style="--shiki-dark:#A9B1D6">hvd</span><span style="--shiki-dark:#89DDFF">.</span><span style="--shiki-dark:#7AA2F7">init</span><span style="--shiki-dark:#9ABDF5">()</span></span>
 <span class="line"></span>
@@ -658,7 +694,7 @@ Dataset 结构如下：</p>
 <p>保存整个模型：<code>torch.save(model, 'asd.pth')</code></p>
 </li>
 <li>
-<p>保存模型参数：<code>torch.save(model.state_dict(), 'asd.pth')</code> （ Recommended ）</p>
+<p>保存模型参数：<code>torch.save(model.state_dict(), 'asd.pth')</code>（推荐）</p>
 </li>
 <li>
 <p>脱离模型源码：使用 TorchScript，同时会有一些加速</p>
@@ -770,19 +806,19 @@ Dataset 结构如下：</p>
 <p>还有就是针对 LLM 的优化。</p>
 <h2>PyTorch/XLA</h2>
 <p>XLA（Accelerated Linear Algebra），一种基于 LLVM 的深度学习编译器，PyTorch 也有其支持。通过目标无关和目标有关两步走进行优化，其中流通的 IR 为 HLO。PyTorch 中 LazyTensor 使用 XLA 作为后端。</p>
-<p><a href="https://developer.huawei.com/consumer/cn/forum/topic/0201750315901780148?fid=0101592429757310384" target="_blank" rel="noopener noreferrer">https://developer.huawei.com/consumer/cn/forum/topic/0201750315901780148?fid=0101592429757310384</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/392630428" target="_blank" rel="noopener noreferrer">https://zhuanlan.zhihu.com/p/392630428</a></p>
+<p><a href="https://developer.huawei.com/consumer/cn/forum/topic/0201750315901780148?fid=0101592429757310384" target="_blank" rel="noopener noreferrer">developer.huawei.com</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/392630428" target="_blank" rel="noopener noreferrer">zhuanlan.zhihu.com</a></p>
 <h2>问题</h2>
 <ul>
 <li><code>cuDNN error: CUDNN_STATUS_NOT_INITIALIZED</code>：<code>rm -rf ~/.nv</code></li>
 <li><code>RuntimeError: DataLoader worker (pid 6741) is killed by signal: Killed.</code>：原因不明，可能是因为数据不允许多线程处理，或者共享内存不足，可降低 batchsize 试试。</li>
-<li><code>OSError: [Errno 12] Cannot allocate memory</code>：当 num_workers &gt; 0 时，CPU 内存使用会慢慢增加，直到爆掉，一个方法是 <code>数据集的__init__时</code> 不使用 Python lists（或 numpy arrays of type object）来保存数据，改用普通的 numpy array 或 tensor。具体讨论：<a href="https://github.com/pytorch/pytorch/issues/13246" target="_blank" rel="noopener noreferrer">https://github.com/pytorch/pytorch/issues/13246</a> ，也就是说，Python 多线程处理时 <code>multiprocessing.Array</code> 转换 Python list 时会触发引用计数，累积多了就会占满内存。</li>
+<li><code>OSError: [Errno 12] Cannot allocate memory</code>：当 num_workers &gt; 0 时，CPU 内存使用会慢慢增加，直到爆掉，一个方法是 <code>数据集的__init__时</code> 不使用 Python lists（或 numpy arrays of type object）来保存数据，改用普通的 numpy array 或 tensor。具体讨论：<a href="https://github.com/pytorch/pytorch/issues/13246" target="_blank" rel="noopener noreferrer">github.com</a> ，也就是说，Python 多线程处理时 <code>multiprocessing.Array</code> 转换 Python list 时会触发引用计数，累积多了就会占满内存。</li>
 <li>运行一段时间爆显存：<code>torch.cuda.empty_cache()</code></li>
 <li><code>CUDA error: device-side assert triggered</code>：输入数据（或标签）的 shape 与运算时期望的 shape 对不上导致</li>
 <li><code>ValueError: Expected more than 1 value per channel when training</code>：因为对 1x1 的 feature map 做 batchnorm，如果 batch 为 1 则 1 channel 只有一个数据于是报错。如果是训练则需要设置高于 1 的 batchsize，同时 dataloader 要 drop last。</li>
 <li><code>Trying to backward through the graph a second time</code>：某些东西多次反传了（如 GAN 的生成图在判别器和生成器反传了两次），或者其他未知原因
 <ul>
-<li>最简单的方法是在前面的反传时设置保存计算图 <code>.backward(retain_graph=True)</code>，但是会相当耗时（ <a href="https://stackoverflow.com/questions/46774641/what-does-the-parameter-retain-graph-mean-in-the-variables-backward-method" target="_blank" rel="noopener noreferrer">https://stackoverflow.com/questions/46774641/what-does-the-parameter-retain-graph-mean-in-the-variables-backward-method</a> ），而且不一定行，可能是其他问题导致</li>
+<li>最简单的方法是在前面的反传时设置保存计算图 <code>.backward(retain_graph=True)</code>，但是会相当耗时（ <a href="https://stackoverflow.com/questions/46774641/what-does-the-parameter-retain-graph-mean-in-the-variables-backward-method" target="_blank" rel="noopener noreferrer">stackoverflow.com</a> ），而且不一定行，可能是其他问题导致</li>
 <li>正常情况下是因为部分变量在两次反传中都有使用，所以出现了问题。使用 <code>.detach()</code> 调整反传路径，将不需要的部分去掉，隔离多次运用到的变量则问题解决</li>
 <li>在某些情况下去掉分布式包装的 <code>find_unused_parameters=True</code> 也能解决？原因不明，可能是版本原因（pytorch 1.11）</li>
 <li>异常情况下和模型有关，原因不明</li>
@@ -795,13 +831,13 @@ Dataset 结构如下：</p>
 <li><code>RuntimeError: Could not run 'aten::thnn_conv2d_forward' with arguments from the 'QuantizedCPU' backend.</code>：QAT 量化时经常出现的问题，因为 QAT 时是 fp32 伪量化训练，而转换后推理时是 int8 真量化，所以可能是量化推理引擎不支持该算子，或者是这个算子 QAT 时是没有被量化的（训练时设置了 <code>module.qconfig = None</code>），应该在运算前经过 <code>DeQuantStub</code></li>
 <li>分布式训练时 GPU 利用率 100%，使用 <code>py-spy</code> 查看发现锁死在 SyncBN 处，最终发现是在打印 loss 时为了同步各个 worker 的 loss 值而使用了 <code>torch.distributed.all_reduce()</code>，但是却放在了打印 loss 的 <code>if local_rank == 0</code> 下面，也就是只有 worker 0 到达了这个函数，而其他 worker 无法到达，直到运行到 SyncBN 处的 <code>torch.distributed.all_reduce()</code> 也等不来 worker 0，形成了死锁</li>
 <li>分布式训练 GPU0 的显存占用明显比其他大，这种不平衡问题本来应该是 <code>DataParallel</code> 才会有的。仔细分析发现 GPU0 显存暴涨是在 <code>amp.initialize()</code> 之后才会出现的，但是经过剖析发现有一个子模型的预训练参数 state_dict 是保存到 <code>cuda:0</code> 的，所以在读取时每个 worker 都将该子模型参数读到了 <code>cuda:0</code>，进而导致了 GPU0 显存暴涨，修改为保存到 <code>cpu</code> 中然后在读取后 <code>.cuda()</code> 分配到各个 worker 的 GPU 上则问题解决</li>
-<li>多进程 CUDA 推理卡住。CUDA 多进程似乎有其他的要求，而且 <code>torchvision.tranform</code> 似乎会在多进程中卡住，原因不明，更多见 <a href="https://pytorch.org/docs/stable/notes/multiprocessing.html" target="_blank" rel="noopener noreferrer">https://pytorch.org/docs/stable/notes/multiprocessing.html</a></li>
-<li><code>RuntimeError: Expected to mark a variable ready only once.</code>：在一些特定模型上进行 DDP 训练才出现的问题，原因不明，建议不要用 DDP 做太复杂的自定义模型的分布式训练，改用 Deepspeed 或许会有用，参考 <a href="https://github.com/pytorch/pytorch/issues/46166" target="_blank" rel="noopener noreferrer">https://github.com/pytorch/pytorch/issues/46166</a> <a href="https://github.com/lucidrains/reformer-pytorch/issues/19" target="_blank" rel="noopener noreferrer">https://github.com/lucidrains/reformer-pytorch/issues/19</a></li>
+<li>多进程 CUDA 推理卡住。CUDA 多进程似乎有其他的要求，而且 <code>torchvision.tranform</code> 似乎会在多进程中卡住，原因不明，更多见 <a href="https://pytorch.org/docs/stable/notes/multiprocessing.html" target="_blank" rel="noopener noreferrer">pytorch.org</a></li>
+<li><code>RuntimeError: Expected to mark a variable ready only once.</code>：在一些特定模型上进行 DDP 训练才出现的问题，原因不明，建议不要用 DDP 做太复杂的自定义模型的分布式训练，改用 Deepspeed 或许会有用，参考 <a href="https://github.com/pytorch/pytorch/issues/46166" target="_blank" rel="noopener noreferrer">github.com</a> <a href="https://github.com/lucidrains/reformer-pytorch/issues/19" target="_blank" rel="noopener noreferrer">github.com</a></li>
 <li>编译自定义算子卡在 <code>_jit_compile</code>-&gt;<code>baton.wait()</code>-&gt;<code>time.sleep(self.wait_seconds)</code>，是因为之前编译到一半中断了，存在文件锁，目录为 <code>~/.cache/torch_extensions/xxx</code>，删掉里面的文件锁或者直接删掉目录都行</li>
 <li><code>can't optimize a non-leaf Tensor</code>：<code>.cuda()</code> 放在最前面（<code>.requires_grad</code> 或 <code>torch.nn.Parameter</code> 定义前），也就是不要把搬到显卡内存的操作加入到计算图中</li>
 <li>使用 dataloader 出现 <code>fd_event_list = self._poll.poll(timeout)</code> 卡死问题
 <ul>
-<li>可能是某些库之间互锁导致（ <a href="https://github.com/DayBreak-u/Thundernet_Pytorch/issues/12" target="_blank" rel="noopener noreferrer">https://github.com/DayBreak-u/Thundernet_Pytorch/issues/12</a> 、 <a href="https://github.com/pytorch/pytorch/issues/33296" target="_blank" rel="noopener noreferrer">https://github.com/pytorch/pytorch/issues/33296</a> ）</li>
+<li>可能是某些库之间互锁导致（ <a href="https://github.com/DayBreak-u/Thundernet_Pytorch/issues/12" target="_blank" rel="noopener noreferrer">github.com</a> 、 <a href="https://github.com/pytorch/pytorch/issues/33296" target="_blank" rel="noopener noreferrer">github.com</a> ）</li>
 <li>dataloader 似乎设置 worker 0 也用了 multithread ？？为什么？？</li>
 <li>偶尔在使用 TensorRT 测试后一段时间内会固定出现，偶尔不使用 TensorRT 也会突然出现，偶而会频繁出现，偶而会完全消失，在另一个镜像中使用相同代码访问同个云盘同步测试没有出现过该问题。故原因未知，或许是系统层问题，或许和 torch1.10.1+torch-tensorrt1.0.0+tensorrt8.03+cuda10.2+py3.6 镜像有关，又或许和 PIL I/O 有关</li>
 </ul>
@@ -814,7 +850,7 @@ Dataset 结构如下：</p>
 </li>
 <li><code>return torch._C._cuda_synchronize(): RuntimeError: CUDA error: out of memory</code>
 <ul>
-<li>线上环境经常出现的问题，应该就是单纯的显存不足？ <a href="https://discuss.pytorch.org/t/pytorch-cuda-synchronize-out-of-memory/9502/2?u=lamply" target="_blank" rel="noopener noreferrer">https://discuss.pytorch.org/t/pytorch-cuda-synchronize-out-of-memory/9502/2?u=lamply</a></li>
+<li>线上环境经常出现的问题，应该就是单纯的显存不足？ <a href="https://discuss.pytorch.org/t/pytorch-cuda-synchronize-out-of-memory/9502/2?u=lamply" target="_blank" rel="noopener noreferrer">discuss.pytorch.org</a></li>
 </ul>
 </li>
 <li><code>AttributeError: Caught AttributeError in DataLoader worker process 0</code>：dataset 里的代码出现错误，比如使用没定义变量什么之类的</li>
